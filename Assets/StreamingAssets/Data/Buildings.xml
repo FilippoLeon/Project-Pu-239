@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Prototypes>
+	<EntityBuilding id="wall" class="EntityBuilding">
+		<Action event="OnInstallAt">luaAction</Action>
+		<EntityInanimate>
+			<Entity>
+				
+			</Entity>
+		</EntityInanimate>
+	</EntityBuilding>
+</Prototypes>
