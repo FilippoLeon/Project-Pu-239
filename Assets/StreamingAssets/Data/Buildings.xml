@@ -2,6 +2,8 @@
 <Prototypes>
 	<EntityBuilding id="wall" class="EntityBuilding">
 		<Action event="OnInstallAt">luaAction</Action>
+		<Pathfinding walkingSpeed="0"/>
+		<ColliderData></ColliderData>
 		<EntityInanimate>
 			<Entity>
 				

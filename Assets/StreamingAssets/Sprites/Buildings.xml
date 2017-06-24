@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SpriteSheet defaultSize="32,32" defaultPivot="0.5,0.5">
-	<Sprite start="0,0" category="stage">propose_law</Sprite>
-	<Sprite start="1,1" category="stage">repeal_law</Sprite>
-	<Sprite start="2,2" category="stage">enforce_law</Sprite>
-	<Sprite start="3,3" category="stage">edit_law</Sprite>
-	<Sprite start="4,4" category="stage">veto_law</Sprite>
-	<Sprite start="4,4" category="stage">accept_law</Sprite>
-	
-	
 	<!--  Connecting wall -->
 	<!-- Class: DireclyOver - Diagonal | xRotations -->
 	<!-- Connections with empty diagonal walls -->
@@ -55,9 +47,9 @@
 	<Sprite start="0,3" category="building">wall_1011_0011</Sprite>
 	<Sprite start="1,2" category="building">wall_1101_1001</Sprite>
 	<!-- F*1: 1111 - 0000 | x4 -->
-	<Sprite start="7,4" category="building">wall_1111_1000</Sprite>
+	<Sprite start="8,5" category="building">wall_1111_1000</Sprite>
 	<Sprite start="8,4" category="building">wall_1111_0100</Sprite>
-	<Sprite start="8,5" category="building">wall_1111_0010</Sprite>
+	<Sprite start="7,4" category="building">wall_1111_0010</Sprite>
 	<Sprite start="7,5" category="building">wall_1111_0001</Sprite>
 	<!-- F*2a: 1111 - 0000 | x4 -->
 	<Sprite start="11,1" category="building">wall_1111_1100</Sprite>

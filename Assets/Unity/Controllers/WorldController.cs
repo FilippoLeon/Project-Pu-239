@@ -35,17 +35,12 @@ public class WorldController : MonoBehaviour {
     private bool paused = true;
     private int speed = 1;
     private int elapsed = 0;
-
-    internal object GetWorld()
-    {
-        throw new NotImplementedException();
-    }
-
+    
     private int elapsedLong = 0;
     private int elapsedLongLong = 0;
     static private int ticLength = 4;
     static private int longTicLength = ticLength * 60;
-    static private int longLongTicLength = longLongTicLength * 5;
+    static private int longLongTicLength = longTicLength * 5;
 
     public MouseAndKeyboardController inputController;
     public CameraController cameraController;
@@ -98,8 +93,11 @@ public class WorldController : MonoBehaviour {
 
         GameObject worldObject = new GameObject();
         WorldComponent worldComponent = worldObject.AddComponent<WorldComponent>();
+        GameObject overlayObject = new GameObject();
+        OverlayComponent overlayComponent = overlayObject.AddComponent<OverlayComponent>();
 
         world.Connect(worldComponent);
+        world.Connect(overlayComponent);
 
         world.Generate();
 

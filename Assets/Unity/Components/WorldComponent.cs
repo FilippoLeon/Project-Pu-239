@@ -3,40 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldComponent : MonoBehaviour, IWorldListener {
+public class WorldComponent : MeshComponent {
+    
+    new void Awake() {
+        base.Awake();
 
-    int tileSizeX = 32;
-    int tileSizeY = 32;
-    Texture2D paletteTexture;
-
-    int sizeX;
-    int sizeY;
-
-    Color[] palette;
-    MeshRenderer meshRenderer;
-    Mesh mesh;
-    private World world;
-
-    public Emitter Emitter
-    {
-        get
-        {
-            return world;
-        }
-
-        set
-        {
-            world = (World) value;
-        }
-    }
-
-    void Awake () {
-        gameObject.AddComponent<MeshFilter>();
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
-
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-
+        name = "World";
+        
         // Generate palette
         palette = new Color[]
         {
@@ -66,73 +39,33 @@ public class WorldComponent : MonoBehaviour, IWorldListener {
         }
         paletteTexture.SetPixels(colors);
         paletteTexture.Apply(false);
-        
-
     }
-
-    Color[] GetPalettePixels(int region)
+    
+    public override void Spawn(World world, Entity entity, Vector2 position)
     {
-        return paletteTexture.GetPixels(0, region * tileSizeY, tileSizeX, tileSizeY);
-    }
-
-    public void InstallAt(World world, EntityBuilding entity, World.Coord coord)
-    {
-        EntityComponent entityComponent = EntityComponent.SpawnEntityControllerInWorld(this, entity, coord);
+        EntityComponent entityComponent = EntityComponent.SpawnEntityControllerInWorld(this, entity, position);
         entity.Connect(entityComponent);
+    }
+
+    public override void InstallAt(World world, EntityBuilding entity, World.Coord coord)
+    {
+        //EntityComponent entityComponent = EntityComponent.SpawnEntityControllerInWorld(this, entity, coord);
+        //entity.Connect(entityComponent);
     }
 
     public static World.Coord MouseToCoordinate(Vector3 vector)
     {
         return Camera.main.ScreenToWorldPoint(vector) + new Vector3(0.5f, 0.5f, 0);
     }
-
-    public void WorldCreated(World world)
+    public static Vector2 MouseToVector2(Vector3 vector)
     {
-
-        this.world = world;
-        sizeX = world.sizeX + 1;
-        sizeY = world.sizeY + 1;
-
-        float deltaX = 0.5f;
-        float deltaY = 0.5f;
-
-        Vector3[] vertices = new Vector3[sizeX * sizeY];
-        int I = 0;
-        for (int i = 0; i < sizeX; ++i)
-        {
-            for (int j = 0; j < sizeY; ++j)
-            {
-                // Move mesh to have centers at integer coordinates
-                vertices[I++] = new Vector3(i - deltaX, j - deltaY, 0);
-            }
-        }
-
-        I = 0;
-        Vector2[] uv = new Vector2[sizeX * sizeY];
-        for (int i = 0; i < sizeX; ++i)
-        {
-            for (int j = 0; j < sizeY; ++j)
-            {
-                uv[I++] = new Vector2(i / (float)(sizeX - 1), j / (float)(sizeY - 1));
-            }
-        }
-
-        int[] triangles = new int[((sizeX - 1) * sizeY - 1) * 6];
-        for (int J = 0; J < (sizeX - 1) * sizeY - 1; ++J)
-        {
-            int J6 = 6 * J;
-            triangles[J6 + 0] = J;
-            triangles[J6 + 1] = J + 1;
-            triangles[J6 + 2] = J + sizeY + 1;
-            triangles[J6 + 3] = J;
-            triangles[J6 + 4] = J + sizeY + 1;
-            triangles[J6 + 5] = J + sizeY;
-        }
+        return Camera.main.ScreenToWorldPoint(vector);
+    }
 
 
-        mesh.vertices = vertices;
-        mesh.uv = uv;
-        mesh.triangles = triangles;
+    public override void WorldCreated(World world)
+    {
+        base.WorldCreated(world);
 
         // Set main texture (world)
         Texture2D worldTexture = new Texture2D(tileSizeX * (sizeX - 1), tileSizeY * (sizeY - 1));
@@ -149,9 +82,24 @@ public class WorldComponent : MonoBehaviour, IWorldListener {
         }
         worldTexture.Apply(false);
     }
-
-    public void Event(string signal, object[] args)
+    
+    public void Update()
     {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector2 pos = MouseToVector2(Input.mousePosition);
 
+            RaycastHit2D ray = Physics2D.Raycast(pos, Vector3.forward);
+            Debug.DrawRay(pos, Vector3.forward, Color.red, 10.0f);
+
+
+            if(ray.collider != null && ray.collider.transform.GetComponent<EntityComponent>() != null)
+            {
+                Debug.Log(ray.collider.transform.gameObject.name);
+                EntityComponent selectedComponent = ray.collider.transform.GetComponent<EntityComponent>();
+
+                world.Selected = selectedComponent.Emitter;
+            }
+        }
     }
 }

@@ -7,28 +7,36 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
 
     SpriteRenderer spriteRenderer;
 
-    EntityBuilding entityBuilding;
+    Entity entity;
     public Emitter Emitter
     {
         get
         {
-            return entityBuilding;
+            return entity;
         }
 
         set
         {
-            entityBuilding = (EntityBuilding) value;
+            entity = (Entity) value;
         }
     }
 
     public static EntityComponent SpawnEntityControllerInWorld(
         WorldComponent worldComponent, Entity entity, 
-        World.Coord coord)
+        Vector2 coord)
     {
         GameObject entityObject = new GameObject();
         EntityComponent entityComponent = entityObject.AddComponent<EntityComponent>();
         entityObject.transform.SetParent(worldComponent.transform);
-        entityComponent.SetPosition(coord);
+        //entityComponent.SetPosition(coord);
+
+        PolygonCollider2D collider = entityObject.AddComponent<PolygonCollider2D>();
+        collider.points = new Vector2[] {
+            new Vector2(-0.5f, -0.5f),
+            new Vector2(-0.5f, 0.5f),
+            new Vector2(0.5f, 0.5f),
+            new Vector2(0.5f, -0.5f)
+        };
 
         entityComponent.spriteRenderer = entityObject.AddComponent<SpriteRenderer>();
         entityComponent.spriteRenderer.sprite = SpriteLoader.GetSprite("test");
@@ -41,26 +49,29 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
         throw new NotImplementedException();
     }
 
+    public void Spawn(World world, Vector2 position)
+    {
+        name = entity.id;
+
+        if (entity is EntityAnimated) name = ((EntityAnimated) entity).name;
+        spriteRenderer.sprite = SpriteLoader.GetSprite("character", "one");
+    }
+
     public void InstallAt(World world, World.Coord coord)
     {
         spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
-        Debug.Log("-------->" + 
-            EnumerableUtilities.PrintValues( ((EntityBuilding)Emitter).GetConnectingNeighbours(), 8)
-            );
+        //spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
     }
 
     public void NeighbourChanged(World world, Tile neighbour)
     {
         spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
-        Debug.Log(
-            EnumerableUtilities.PrintValues( ((EntityBuilding)Emitter).GetConnectingNeighbours(), 8)
-            );
     }
 
-    private void SetPosition(World.Coord coord)
-    {
-        this.transform.position = new Vector3(coord.x, coord.y, 0);
-    }
+    //private void SetPosition(Vector2 position)
+    //{
+    //    this.transform.position = position;
+    //}
 
     // Use this for initialization
     void Start () {
@@ -71,4 +82,9 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
 	void Update () {
 		
 	}
+
+    public void PositionChanged(World world, Vector2 position)
+    {
+        this.transform.position = position;
+    }
 }

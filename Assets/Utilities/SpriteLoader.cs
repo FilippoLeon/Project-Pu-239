@@ -85,7 +85,7 @@ public class SpriteLoader
     {
         if (categories.ContainsKey(category) && categories[category].ContainsKey(id))
             return categories[category][id];
-        return null;
+        return placeHolder;
     }
 
     static private void LoadSpriteSheet(FileInfo path)
@@ -116,7 +116,8 @@ public class SpriteLoader
             XmlReaderSettings settings = new XmlReaderSettings();
             XmlReader reader = XmlReader.Create(pathXml, settings);
 
-            LoadSprites(reader, tex);
+            int count = LoadSprites(reader, tex);
+            Debug.Log(String.Format("Loaded {0} sprite(s) from {1}.", count, pathXml));
         }
         else
         {
@@ -127,8 +128,10 @@ public class SpriteLoader
         }
     }
 
-    static public void LoadSprites(XmlReader reader, Texture2D tex)
+    static public int LoadSprites(XmlReader reader, Texture2D tex)
     {
+        int spriteCount = 0;
+
         reader.MoveToContent();
 
         Vector2 dP = defaultPivot;
@@ -182,23 +185,26 @@ public class SpriteLoader
                         string[] pivot = reader.GetAttribute("pivot").Split(',');
                         dP1 = new Vector2(Convert.ToSingle(pivot[0]), Convert.ToSingle(pivot[1]));
                     }
+                    string category = reader.GetAttribute("category");
                     string name = reader.ReadInnerXml();
 
-                    Debug.Assert(tex != null);
                     sprites[name] = Sprite.Create(tex, new Rect(pos, dS1), dP1, pixelPerUnit);
-                    if (reader.GetAttribute("category") != null)
+                    if (category != null)
                     {
-                        string cat = reader.GetAttribute("category");
-                        if (!categories.ContainsKey(cat)) categories[cat] = new Dictionary<string, Sprite>();
-                        categories[cat][name] = sprites[name];
+                        if (!categories.ContainsKey(category)) categories[category] = new Dictionary<string, Sprite>();
+                        categories[category][name] = sprites[name];
                     }
+
+                    Debug.Assert(tex != null);
                     Debug.Assert(sprites[name] != null);
+                    ++spriteCount;
                     break;
                 default:
                     break;
             }
         }
 
+        return spriteCount;
     }
 
     public static Sprite GetSprite(string name)
@@ -225,10 +231,15 @@ public class SpriteLoader
         return ret;
     }
 
+    public static Sprite GetSprite(string category, string name)
+    {
+        return TryLoadSprite(category, name);
+    }
+
     public static Sprite GetSprite(string name, BitArray neighbours)
     {
         name += BitArrayToString(neighbours);
-        Debug.Log(String.Format("Loading '{0}'", name));
+        //Debug.Log(String.Format("Loading '{0}'", name));
         if (sprites.ContainsKey(name) && sprites[name] != null) return sprites[name];
         else return placeHolder;
     }
