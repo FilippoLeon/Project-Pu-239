@@ -13,6 +13,7 @@ public class OverlayComponent : MeshComponent
 
     new void Awake()
     {
+        SetResolution(1, 1);
         //Heatmap = (i, j) => i + j;
 
         Heatmap = (i, j) =>
@@ -78,7 +79,7 @@ public class OverlayComponent : MeshComponent
         
         meshRenderer.material = new Material(Shader.Find("Sprites/Diffuse"));
         Color col = meshRenderer.material.color;
-        col.a = 0.2f;
+        col.a = 0.5f;
         meshRenderer.material.color = col;
 
         // Set main texture (world)
@@ -116,6 +117,16 @@ public class OverlayComponent : MeshComponent
             }
         }
         overlayTexture.Apply(false);
+    }
+
+    public override void Despawn(World world, Entity entity)
+    {
+
+    }
+
+    public override void Uninstall(World world, EntityBuilding entity)
+    {
+
     }
 }
 

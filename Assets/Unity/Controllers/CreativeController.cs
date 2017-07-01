@@ -15,8 +15,10 @@ public class CreativeController : MonoBehaviour {
     public enum CreativeTool
     {
         PlaceWall,
+        PlaceDoor,
         SpawnCharacter,
         MoveSelected,
+        Despawn,
     }
 
     public CreativeTool creativeTool;
@@ -38,6 +40,9 @@ public class CreativeController : MonoBehaviour {
                 case CreativeTool.PlaceWall:
                     worldController.World.InstallAt(EntityRegistry.InstantiateEntityBuilding("wall"), cursorCoord);
                     break;
+                case CreativeTool.PlaceDoor:
+                    worldController.World.InstallAt(EntityRegistry.InstantiateEntityBuilding("door"), cursorCoord);
+                    break;
                 case CreativeTool.SpawnCharacter:
                     worldController.World.Spawn(EntityRegistry.InstantiateCharacter(), cursorPosition);
                     break;
@@ -57,7 +62,7 @@ public class CreativeController : MonoBehaviour {
                     int I = 0;
                     foreach(Tile tile in path)
                     {
-                        Debug.Log(tile.coord.ToVector2());
+                        //Debug.Log(tile.coord.ToVector2());
                         pos[I++] = (Vector3) tile.coord.ToVector2() - 0.02f*Vector3.forward;
                     }
                     lr.numPositions = path.Count;
@@ -66,6 +71,9 @@ public class CreativeController : MonoBehaviour {
                     lr.material = new Material(Shader.Find("Diffuse"));
 
 
+                    break;
+                case CreativeTool.Despawn:
+                    worldController.World.Uninstall(cursorCoord);
                     break;
                 default:
                     break;
@@ -76,8 +84,8 @@ public class CreativeController : MonoBehaviour {
 
     void NextTool()
     {
-        Debug.LogWarning(String.Format("Next tool '{0}'.", creativeTool));
         creativeTool += 1;
+        Debug.LogWarning(String.Format("Next tool '{0}'.", creativeTool));
         if ((int) creativeTool == Enum.GetNames(typeof(CreativeTool)).Length) {
             creativeTool = (CreativeTool) Enum.GetValues(typeof(CreativeTool)).GetValue(0);
         }

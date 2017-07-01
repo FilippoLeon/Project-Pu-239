@@ -9,8 +9,9 @@ using UnityEngine;
 public class EntityBuilding : EntityInanimated, IXmlSerializable
 {
     bool installed = false;
+    bool roomBoundary = false;
+    bool connecting = false;
     private float walkingSpeed = 1;
-
 
     private Tile tile = null;
 
@@ -25,6 +26,8 @@ public class EntityBuilding : EntityInanimated, IXmlSerializable
     {
         this.installed = other.installed;
         this.walkingSpeed = other.walkingSpeed;
+        this.roomBoundary = other.roomBoundary;
+        this.connecting = other.connecting;
     }
 
     public EntityBuilding(XmlReader reader)
@@ -67,6 +70,21 @@ public class EntityBuilding : EntityInanimated, IXmlSerializable
         }
     }
 
+    public bool RoomBoundary
+    {
+        get
+        {
+            return roomBoundary;
+        }
+
+        set
+        {
+            roomBoundary = value;
+        }
+    }
+
+    public bool Connecting { get { return connecting; } set { connecting = value; } }
+
     override public XmlSchema GetSchema()
     {
         return null;
@@ -98,6 +116,16 @@ public class EntityBuilding : EntityInanimated, IXmlSerializable
                         if (walkingSpeedAttribute != null)
                         {
                             walkingSpeed = float.Parse(walkingSpeedAttribute);
+                        }
+                        string roomBoundaryAttribute = reader.GetAttribute("roomBoundary");
+                        if (roomBoundaryAttribute != null)
+                        {
+                            roomBoundary = bool.Parse(roomBoundaryAttribute);
+                        }
+                        string connectingAttribute = reader.GetAttribute("connecting");
+                        if (connectingAttribute != null)
+                        {
+                            connecting = bool.Parse(connectingAttribute);
                         }
                         break;
                     default:

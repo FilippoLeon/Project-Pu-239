@@ -59,13 +59,27 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
 
     public void InstallAt(World world, World.Coord coord)
     {
-        spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
-        //spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
+        SetEntitySprite(world);
     }
 
     public void NeighbourChanged(World world, Tile neighbour)
     {
-        spriteRenderer.sprite = SpriteLoader.GetSprite("wall", ((EntityBuilding)Emitter).GetConnectingNeighbours());
+        SetEntitySprite(world);
+    }
+
+    public void SetEntitySprite(World world)
+    {
+        if (Emitter is Entity)
+        {
+            Entity.SpriteInfo spriteInfo = (Emitter as Entity).spriteInfo;
+            if (spriteInfo.type == "connecting")
+            {
+                spriteRenderer.sprite = SpriteLoader.GetSprite(spriteInfo.id, ((EntityBuilding)Emitter).GetConnectingNeighbours());
+            } else
+            {
+                spriteRenderer.sprite = SpriteLoader.GetSprite(spriteInfo.id);
+            }
+        }
     }
 
     //private void SetPosition(Vector2 position)
@@ -86,5 +100,10 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
     public void PositionChanged(World world, Vector2 position)
     {
         this.transform.position = position;
+    }
+
+    public void Despawn(World world)
+    {
+        Destroy(gameObject);
     }
 }

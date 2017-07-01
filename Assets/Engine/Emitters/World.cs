@@ -88,6 +88,16 @@ public class World : Emitter {
         {
             return new Coord((int) vector.x, (int) vector.y);
         }
+
+        public static Coord operator-(Coord left, Coord right)
+        {
+            return new Coord(left.x - right.x, left.y - right.y);
+        }
+
+        public Coord Rotate()
+        {
+            return new Coord(-y, x);
+        }
     }
 
     internal EntityAnimated GetCharacter(string name)
@@ -195,9 +205,29 @@ public class World : Emitter {
 
     }
 
+    public void Despawn(Entity entity)
+    {
+        if(entity == null)
+        {
+            return;
+        }
+        if (entity is EntityAnimated)
+        {
+            characters.Remove(entity as EntityAnimated);
+        }
+
+        foreach (IEmitterListener listener in listeners)
+        {
+            if (listener is IWorldListener) ((IWorldListener) listener).Despawn(this, entity);
+        }
+
+        entity.Despawn(this);
+    }
+
+
     public void InstallAt(EntityBuilding entity, Coord coord)
     {
-        if (!IsValidCoordinate(coord)) return;
+        if(!CanInstallAt(entity, coord)) return;
 
         Spawn(entity, coord.ToVector2());
 
@@ -209,6 +239,23 @@ public class World : Emitter {
         GetTileAt(coord).Install(entity);
 
         Emit("OnInstallAt");
+    }
+    public void Uninstall(Coord coord)
+    {
+
+        Tile tile = GetTileAt(coord);
+        if (tile == null || tile.building == null) return;
+        EntityBuilding entity = tile.building;
+        
+        tile.Uninstall();
+        foreach (IEmitterListener listener in listeners)
+        {
+            if (listener is IWorldListener) ((IWorldListener) listener).Uninstall(this, entity);
+        }
+        
+        Despawn(entity);
+        
+        Emit("OnUninstallAt");
     }
 
     private void WorldCreated()

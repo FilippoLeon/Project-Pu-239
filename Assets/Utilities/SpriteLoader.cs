@@ -72,7 +72,7 @@ public class SpriteLoader
 
         placeHolder = Sprite.Create(placeholderTexture,
             new Rect(0f, 0f, sizeX, sizeY),
-            new Vector2(0.5f, 0.5f), pixelPerUnit);
+            new Vector2(0.5f, 0.5f), pixelPerUnit, 0, SpriteMeshType.FullRect, new Vector4(1,1,1,1));
     }
 
     /// <summary>
@@ -185,10 +185,19 @@ public class SpriteLoader
                         string[] pivot = reader.GetAttribute("pivot").Split(',');
                         dP1 = new Vector2(Convert.ToSingle(pivot[0]), Convert.ToSingle(pivot[1]));
                     }
+
+                    Vector4 border = new Vector4(0, 0, 0, 0);
+                    if (reader.GetAttribute("border") != null)
+                    {
+                        string[] borderStr = reader.GetAttribute("border").Split(',');
+                        border = new Vector4(Convert.ToSingle(borderStr[0]), Convert.ToSingle(borderStr[1]), 
+                            Convert.ToSingle(borderStr[2]), Convert.ToSingle(borderStr[3]));
+                    }
+
                     string category = reader.GetAttribute("category");
                     string name = reader.ReadInnerXml();
 
-                    sprites[name] = Sprite.Create(tex, new Rect(pos, dS1), dP1, pixelPerUnit);
+                    sprites[name] = Sprite.Create(tex, new Rect(pos, dS1), dP1, pixelPerUnit, 0, SpriteMeshType.FullRect, border);
                     if (category != null)
                     {
                         if (!categories.ContainsKey(category)) categories[category] = new Dictionary<string, Sprite>();

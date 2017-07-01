@@ -4,14 +4,17 @@ using UnityEngine;
 using Priority_Queue;
 using System;
 
-public class EntityAnimated : Entity {
+public class EntityAnimated : Entity
+{
     Vector2 target;
 
     bool moving = false;
     public LinkedList<Tile> path;
     Vector2 previousWaypoint;
     Vector2 nextWaypoint;
+    float distance = 0f;
     float theta = 0f;
+    float speed = 1f;
 
     public string name;
 
@@ -19,40 +22,7 @@ public class EntityAnimated : Entity {
     {
         return Tile.Distance(from, to);
     }
-
-    Dictionary<Tile, TileCost> FindPath(Tile startTile, Tile endTile)
-    {
-
-        SimplePriorityQueue<Tile, float> frontier = new SimplePriorityQueue<Tile, float>();
-        frontier.Enqueue(startTile, 0);
-        Dictionary<Tile, TileCost> comeFrom = new Dictionary<Tile, TileCost>();
-        comeFrom[startTile] = new TileCost(null, 0);
-
-        while (frontier.Count != 0)
-        {
-            Tile current = frontier.Dequeue();
-            if(current == endTile)
-            {
-                break;
-            }
-            foreach(Tile next in current.GetNeighboursList())
-            {
-                // Ignore impassable tiles
-                if (!next.IsPassable()) continue;
-
-                float newCost = comeFrom[current].cost + ( current.WalkingCost() + next.WalkingCost() ) * 0.5f; // cost in graph
-                if(!comeFrom.ContainsKey(next) || newCost < comeFrom[next].cost)
-                {
-                    // Heuristic to find cost to arrive to end
-                    float priority = newCost + Heuristic(next, endTile);
-                    frontier.Enqueue(next, priority);
-                    comeFrom[next] = new TileCost(current, newCost);
-                }
-            }
-        }
-
-        return comeFrom;
-    }
+    
 
     public void StartMovingTo(Vector2 endPosition)
     {
@@ -72,6 +42,7 @@ public class EntityAnimated : Entity {
     {
         previousWaypoint = Position;
         nextWaypoint = path.First.Value.coord.ToVector2();
+        distance = (previousWaypoint - nextWaypoint).magnitude;
         path.RemoveFirst();
         theta = 0f;
     }
@@ -84,11 +55,11 @@ public class EntityAnimated : Entity {
     private void UpdatePosition()
     {
         if (!moving) return;
-        theta += 0.1f;
+        theta += 0.1f / distance * speed;
         Position = Vector2.Lerp(previousWaypoint, nextWaypoint, theta);
-        if(theta >= 1f)
+        if (theta >= 1f)
         {
-            if(path.Count == 0)
+            if (path.Count == 0)
             {
                 moving = false;
                 path = null;
@@ -103,27 +74,46 @@ public class EntityAnimated : Entity {
         Tile startTile = world.GetTileAtCoord(startPosition);
         Tile endTile = world.GetTileAtCoord(endPosition);
 
-        Dictionary<Tile, TileCost> comeFrom = FindPath(startTile, endTile);
-
-        LinkedList<Tile> list = new LinkedList<Tile>();
-        Tile current = endTile;
-        list.AddFirst(endTile);
-        while (current != startTile && comeFrom.ContainsKey(current))
+        //// Quick check with Room based pathfinding
+        if(startTile.Room != endTile.Room)
         {
-            Tile previous = comeFrom[current].tile;
-            list.AddFirst(previous);
-            current = previous;
-        }
-        //list.AddFirst(startTile);
+            Func<Room, Room, float> RoomHeuristic = (Room A, Room B) => { return 1; };
 
-        if (list.Count == 1) return null;
+            Dictionary<Room, Cost<Room>> comeFromRoom = Pathfinding.FindPath(startTile.Room, endTile.Room,
+                (Room r) => false, RoomHeuristic, true /* diagonal */);
+
+            LinkedList<Room> roomList = Pathfinding.ReconstructPath(comeFromRoom, startTile.Room, endTile.Room);
+            if(roomList == null)
+            {
+                Debug.LogWarning("No path according to room adjacency.");
+                return null;
+            }
+        }
+
+        Dictionary<Tile, Cost<Tile>> comeFrom = Pathfinding.FindPath(startTile, endTile,
+            (Tile next) => !next.IsPassable(), Heuristic, true /* diagonal */);
+
+        LinkedList<Tile> list = Pathfinding.ReconstructPath(comeFrom, startTile, endTile);
+
+        Vector2 firstCoord = list.First.Value.coord.ToVector2();
+        Vector2 secondCoord = list.First.Next.Value.coord.ToVector2();
+
+        // Remove first tile if is faster to go to the second tile
+            list.RemoveFirst();
+
+        if(list == null)
+        {
+            Debug.LogError("No path.");
+            return null;
+        }
 
         /// DEBUG DRAW PATH
         /// 
         Tile previousTile = null;
         foreach (Tile tile in list)
         {
-            if (previousTile != null) {
+            if (previousTile != null)
+            {
                 Debug.DrawLine(previousTile.coord.ToVector2(), tile.coord.ToVector2(), Color.blue, 20);
             }
             previousTile = tile;
@@ -131,16 +121,5 @@ public class EntityAnimated : Entity {
 
         return list;
     }
-}
-
-internal class TileCost
-{
-    public Tile tile;
-    public float cost;
-
-    public TileCost(Tile tile, float cost)
-    {
-        this.tile = tile;
-        this.cost = cost;
-    }
+    
 }

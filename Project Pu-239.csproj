@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.4f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -75,12 +77,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Engine\Tools\Pathfinding\Cost.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Emitter.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Entity.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityAnimated.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityBuilding.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityHuman.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityInanimated.cs" />
+    <Compile Include="Assets\Engine\Tools\Pathfinding\IWieghtedNode.cs" />
     <Compile Include="Assets\Engine\Emitters\Room.cs" />
     <Compile Include="Assets\Engine\Emitters\Tile.cs" />
     <Compile Include="Assets\Engine\Emitters\World.cs" />
@@ -89,6 +93,7 @@
     <Compile Include="Assets\Engine\Interfaces\IEntityListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IWorldListener.cs" />
     <Compile Include="Assets\Engine\Registry\EntityRegistry.cs" />
+    <Compile Include="Assets\Engine\Tools\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Unity\Components\EntityComponent.cs" />
     <Compile Include="Assets\Unity\Components\MeshComponent.cs" />
     <Compile Include="Assets\Unity\Components\OverlayComponent.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="Assets\Unity\Controllers\CreativeController.cs" />
     <Compile Include="Assets\Unity\Controllers\MouseAndKeyboardController.cs" />
     <Compile Include="Assets\Unity\Controllers\WorldController.cs" />
+    <Compile Include="Assets\Unity\GUI\GUIController.cs" />
     <Compile Include="Assets\Utilities\EnumerableUtilities.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueue.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueueNode.cs" />
@@ -114,11 +120,15 @@
   <ItemGroup>
     <None Include="Assets\StreamingAssets\Colormaps\LICENSE.txt" />
     <None Include="Assets\StreamingAssets\Data\Buildings.xml" />
+    <None Include="Assets\StreamingAssets\Data\UI.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Buildings.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Characters.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Furniture.xml" />
     <None Include="Assets\StreamingAssets\Sprites\UI.xml" />
     <None Include="Assets\Utilities\Priority Queue\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Unity\GUI\Widgets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

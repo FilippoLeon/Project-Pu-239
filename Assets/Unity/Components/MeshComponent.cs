@@ -41,6 +41,12 @@ public abstract class MeshComponent : MonoBehaviour, IWorldListener
         
     }
 
+    public void SetResolution(int resX, int resY)
+    {
+        tileSizeX = resX;
+        tileSizeY = resY;
+    }
+
     protected Color[] GetPalettePixels(int index)
     {
         return paletteTexture.GetPixels(0, index * tileSizeY, tileSizeX, tileSizeY);
@@ -100,5 +106,7 @@ public abstract class MeshComponent : MonoBehaviour, IWorldListener
     }
 
     public abstract void Spawn(World world, Entity entity, Vector2 position);
+    public abstract void Despawn(World world, Entity entity);
     public abstract void InstallAt(World world, EntityBuilding entity, World.Coord coord);
+    public abstract void Uninstall(World world, EntityBuilding entity);
 }

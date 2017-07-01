@@ -45,6 +45,7 @@ public class WorldController : MonoBehaviour {
     public MouseAndKeyboardController inputController;
     public CameraController cameraController;
     public CreativeController creativeController;
+    public GUIController guiController;
 
     public static int[] speedRatio = new int[] { 1, 2, 4 };
     private static int maxSpeed = speedRatio.Length - 1;
@@ -78,18 +79,20 @@ public class WorldController : MonoBehaviour {
         inputController.worldController = this;
         creativeController = gameObject.AddComponent<CreativeController>();
         creativeController.worldController = this;
-
         cameraController = gameObject.GetComponent<CameraController>();
         cameraController.worldController = this;
 
         SpriteLoader.Load();
+
+        guiController = gameObject.AddComponent<GUIController>();
+        guiController.worldController = this;
     }
 
 	// Use this for initialization
 	void Start () {
         PreInit();
 
-        world = new World(100, 100);
+        world = new World(200, 200);
 
         GameObject worldObject = new GameObject();
         WorldComponent worldComponent = worldObject.AddComponent<WorldComponent>();

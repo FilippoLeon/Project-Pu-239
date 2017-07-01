@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SpriteSheet defaultSize="32,32" defaultPivot="0.5,0.5">
+	<Sprite start="13,13" category="building">door</Sprite>
 	<!--  Connecting wall -->
 	<!-- Class: DireclyOver - Diagonal | xRotations -->
 	<!-- Connections with empty diagonal walls -->

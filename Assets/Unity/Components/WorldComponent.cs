@@ -53,6 +53,16 @@ public class WorldComponent : MeshComponent {
         //entity.Connect(entityComponent);
     }
 
+    public override void Despawn(World world, Entity entity)
+    {
+
+    }
+
+    public override void Uninstall(World world, EntityBuilding entity)
+    {
+
+    }
+
     public static World.Coord MouseToCoordinate(Vector3 vector)
     {
         return Camera.main.ScreenToWorldPoint(vector) + new Vector3(0.5f, 0.5f, 0);
@@ -89,17 +99,28 @@ public class WorldComponent : MeshComponent {
         {
             Vector2 pos = MouseToVector2(Input.mousePosition);
 
-            RaycastHit2D ray = Physics2D.Raycast(pos, Vector3.forward);
-            Debug.DrawRay(pos, Vector3.forward, Color.red, 10.0f);
-
-
-            if(ray.collider != null && ray.collider.transform.GetComponent<EntityComponent>() != null)
+            EntityComponent entityComponent = GetEmitterAt(pos);
+            if(entityComponent == null)
             {
-                Debug.Log(ray.collider.transform.gameObject.name);
-                EntityComponent selectedComponent = ray.collider.transform.GetComponent<EntityComponent>();
-
-                world.Selected = selectedComponent.Emitter;
+                return;
             }
+            world.Selected = entityComponent.Emitter;
         }
     }
+
+    static public EntityComponent GetEmitterAt(Vector2 pos)
+    {
+
+        RaycastHit2D ray = Physics2D.Raycast(pos, Vector3.forward);
+        Debug.DrawRay(pos, Vector3.forward, Color.red, 10.0f);
+
+        if (ray.collider != null && ray.collider.transform.GetComponent<EntityComponent>() != null)
+        {
+            Debug.Log(ray.collider.transform.gameObject.name);
+            return ray.collider.transform.GetComponent<EntityComponent>();
+        }
+
+        return null;
+    }
+    
 }
