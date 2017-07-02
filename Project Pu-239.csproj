@@ -75,16 +75,20 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="MoonSharp.Interpreter">
+      <HintPath>Assets\Plugins\MoonSharp.Interpreter.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\Plugins\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Engine\Tools\Pathfinding\Cost.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Emitter.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Entity.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityAnimated.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityBuilding.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityHuman.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityInanimated.cs" />
-    <Compile Include="Assets\Engine\Tools\Pathfinding\IWieghtedNode.cs" />
     <Compile Include="Assets\Engine\Emitters\Room.cs" />
     <Compile Include="Assets\Engine\Emitters\Tile.cs" />
     <Compile Include="Assets\Engine\Emitters\World.cs" />
@@ -93,6 +97,8 @@
     <Compile Include="Assets\Engine\Interfaces\IEntityListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IWorldListener.cs" />
     <Compile Include="Assets\Engine\Registry\EntityRegistry.cs" />
+    <Compile Include="Assets\Engine\Tools\Pathfinding\Cost.cs" />
+    <Compile Include="Assets\Engine\Tools\Pathfinding\IWieghtedNode.cs" />
     <Compile Include="Assets\Engine\Tools\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Unity\Components\EntityComponent.cs" />
     <Compile Include="Assets\Unity\Components\MeshComponent.cs" />
@@ -104,7 +110,15 @@
     <Compile Include="Assets\Unity\Controllers\MouseAndKeyboardController.cs" />
     <Compile Include="Assets\Unity\Controllers\WorldController.cs" />
     <Compile Include="Assets\Unity\GUI\GUIController.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Label.cs" />
+    <Compile Include="Assets\Utilities\PathUtilities.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidget.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidgetContainer.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Button.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Panel.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Widget.cs" />
     <Compile Include="Assets\Utilities\EnumerableUtilities.cs" />
+    <Compile Include="Assets\Utilities\LUA\ScriptLoader.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueue.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueueNode.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\GenericPriorityQueue.cs" />
@@ -116,19 +130,17 @@
     <Compile Include="Assets\Utilities\Priority Queue\StablePriorityQueue.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\StablePriorityQueueNode.cs" />
     <Compile Include="Assets\Utilities\SpriteLoader.cs" />
+    <Compile Include="Assets\Utilities\XmlUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StreamingAssets\Colormaps\LICENSE.txt" />
     <None Include="Assets\StreamingAssets\Data\Buildings.xml" />
-    <None Include="Assets\StreamingAssets\Data\UI.xml" />
+    <None Include="Assets\StreamingAssets\Data\UI\UI.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Buildings.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Characters.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Furniture.xml" />
     <None Include="Assets\StreamingAssets\Sprites\UI.xml" />
     <None Include="Assets\Utilities\Priority Queue\LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\Unity\GUI\Widgets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -4,11 +4,13 @@ using System.Xml;
 using UnityEngine;
 using System.IO;
 using System;
+using MoonSharp.Interpreter;
 
+[MoonSharpUserData]
 public class EntityRegistry {
 
     static string path = "Data";
-    static private Dictionary<string, EntityBuilding> buildingsRegistry = new Dictionary<string, EntityBuilding>();
+    static public Dictionary<string, EntityBuilding> buildingsRegistry = new Dictionary<string, EntityBuilding>();
 
     public EntityRegistry()
     {

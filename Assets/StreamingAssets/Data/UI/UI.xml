@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Canvas>
+	<Panel id="creative_panel" anchorMin="0,0" anchorMax="1,0.1">
+		<Action name="OnCreate">buildBuildingPlacementPanel</Action>
+	</Panel>
+	<Panel id="slection_view" layout="grid" gridX="2" anchorMin="0,0.9" anchorMax="1,1">
+		<Label><Text>Tile</Text></Label>
+		<Label><Text>Tile2</Text></Label>
+		<Label><Text>Coord:</Text></Label>
+		<Label id="tile_coord"><Text>N/D</Text></Label>
+		<Button>
+			<Text>Button</Text>
+			<Action name="OnClick"></Action>
+		</Button>
+		
+		<Action name="OnUpdate">SelectionViewOnUpdate</Action>
+	</Panel>
+</Canvas>

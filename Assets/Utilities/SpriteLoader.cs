@@ -104,6 +104,7 @@ public class SpriteLoader
         if (tex.LoadImage(imageData))
         {
             tex.filterMode = FilterMode.Point;
+            //tex.filterMode = FilterMode.Trilinear;
         }
         else
         {
@@ -155,6 +156,11 @@ public class SpriteLoader
             string[] pivot = reader.GetAttribute("defaultPivot").Split(',');
             dP = new Vector2(Convert.ToSingle(pivot[0]), Convert.ToSingle(pivot[1]));
         }
+        int defaultPixelPerUnit = pixelPerUnit;
+        if (reader.GetAttribute("defaultPpu") != null)
+        {
+            defaultPixelPerUnit = Convert.ToInt32(reader.GetAttribute("defaultPpu"));
+        }
 
         while (reader.Read())
         {
@@ -193,11 +199,17 @@ public class SpriteLoader
                         border = new Vector4(Convert.ToSingle(borderStr[0]), Convert.ToSingle(borderStr[1]), 
                             Convert.ToSingle(borderStr[2]), Convert.ToSingle(borderStr[3]));
                     }
+                    int pixelPerUnitThis = defaultPixelPerUnit;
+                    if (reader.GetAttribute("ppu") != null)
+                    {
+                        pixelPerUnitThis = Convert.ToInt32(reader.GetAttribute("ppu"));
+                    }
 
                     string category = reader.GetAttribute("category");
                     string name = reader.ReadInnerXml();
 
-                    sprites[name] = Sprite.Create(tex, new Rect(pos, dS1), dP1, pixelPerUnit, 0, SpriteMeshType.FullRect, border);
+                    sprites[name] = Sprite.Create(tex, new Rect(pos, dS1), dP1, 
+                        pixelPerUnitThis, 0, SpriteMeshType.FullRect, border);
                     if (category != null)
                     {
                         if (!categories.ContainsKey(category)) categories[category] = new Dictionary<string, Sprite>();

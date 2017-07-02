@@ -1,8 +1,10 @@
-﻿using System;
+﻿using MoonSharp.Interpreter;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[MoonSharpUserData]
 public class World : Emitter {
 
     Tile[,] tiles;
@@ -11,6 +13,7 @@ public class World : Emitter {
 
     List<EntityAnimated> characters = new List<EntityAnimated>();
     Emitter selected;
+    public Tile selectedTile;
 
     public Emitter Selected
     {
@@ -25,7 +28,8 @@ public class World : Emitter {
         }
     }
 
-    public struct Coord
+    [MoonSharpUserData]
+    public struct Coord : IFormattable
     {
         public int x, y;
 
@@ -98,6 +102,18 @@ public class World : Emitter {
         {
             return new Coord(-y, x);
         }
+
+        public string ToString(string format = null, IFormatProvider formatProvider = null)
+        {
+            return String.Format("{0}x{1}", x, y);
+        }
+    }
+
+    public EntityRegistry registry;
+
+    internal void SetRegistry(EntityRegistry entityRegistry)
+    {
+        registry = entityRegistry;
     }
 
     internal EntityAnimated GetCharacter(string name)

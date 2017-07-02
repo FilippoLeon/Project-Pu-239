@@ -1,8 +1,10 @@
-﻿using Priority_Queue;
+﻿using MoonSharp.Interpreter;
+using Priority_Queue;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[MoonSharpUserData]
 public class Tile : Emitter, IFormattable, IWieghtedNode<Tile>
 {
     public World.Coord coord;
@@ -502,6 +504,11 @@ public class Tile : Emitter, IFormattable, IWieghtedNode<Tile>
     }
 
     public string ToString(string format, IFormatProvider formatProvider)
+    {
+        return ToString();
+    }
+
+    public override string ToString()
     {
         return String.Format("Tile at {0}x{1}", coord.x, coord.y);
     }

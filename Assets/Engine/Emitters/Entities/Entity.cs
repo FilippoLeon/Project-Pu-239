@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoonSharp.Interpreter;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -6,6 +7,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using UnityEngine;
 
+[MoonSharpUserData]
 public class Entity : Emitter, IXmlSerializable {
 
     public string id;
@@ -16,6 +18,7 @@ public class Entity : Emitter, IXmlSerializable {
         public string id;
         public string type;
     }
+
     public SpriteInfo spriteInfo = new SpriteInfo();
 
     public Vector2 Position

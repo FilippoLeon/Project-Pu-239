@@ -100,11 +100,13 @@ public class WorldComponent : MeshComponent {
             Vector2 pos = MouseToVector2(Input.mousePosition);
 
             EntityComponent entityComponent = GetEmitterAt(pos);
-            if(entityComponent == null)
+            if(entityComponent != null)
             {
-                return;
+                world.Selected = entityComponent.Emitter;
+            } else
+            {
+                world.selectedTile = world.GetTileAt(pos);
             }
-            world.Selected = entityComponent.Emitter;
         }
     }
 

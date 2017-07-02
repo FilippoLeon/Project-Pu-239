@@ -7,6 +7,7 @@ public class WorldController : MonoBehaviour {
 
     private static World world;
 
+    public static World StaticWorld;
     public bool Paused
     {
         get
@@ -29,6 +30,7 @@ public class WorldController : MonoBehaviour {
         set
         {
             world = value;
+            StaticWorld = world;
         }
     }
 
@@ -51,6 +53,7 @@ public class WorldController : MonoBehaviour {
     private static int maxSpeed = speedRatio.Length - 1;
     private static int minSpeed = 0;
 
+    private EntityRegistry entityRegistry;
     internal void IncreaseSpeed()
     {
         speed = Math.Min(speed + 1, maxSpeed);
@@ -73,7 +76,7 @@ public class WorldController : MonoBehaviour {
     
     void PreInit()
     {
-        new EntityRegistry();
+        entityRegistry = new EntityRegistry();
 
         inputController = gameObject.AddComponent<MouseAndKeyboardController>();
         inputController.worldController = this;
@@ -83,6 +86,7 @@ public class WorldController : MonoBehaviour {
         cameraController.worldController = this;
 
         SpriteLoader.Load();
+        new LUA.ScriptLoader();
 
         guiController = gameObject.AddComponent<GUIController>();
         guiController.worldController = this;
@@ -92,7 +96,8 @@ public class WorldController : MonoBehaviour {
 	void Start () {
         PreInit();
 
-        world = new World(200, 200);
+        World = new World(200, 200);
+        world.SetRegistry(entityRegistry);
 
         GameObject worldObject = new GameObject();
         WorldComponent worldComponent = worldObject.AddComponent<WorldComponent>();
