@@ -89,17 +89,29 @@
     <Compile Include="Assets\Engine\Emitters\Entities\EntityBuilding.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityHuman.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityInanimated.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\IEmitter.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\Item.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\Properties\Body.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\Properties\Condition.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\Properties\Health.cs" />
+    <Compile Include="Assets\Engine\Emitters\Entities\SpriteInfo.cs" />
     <Compile Include="Assets\Engine\Emitters\Room.cs" />
     <Compile Include="Assets\Engine\Emitters\Tile.cs" />
     <Compile Include="Assets\Engine\Emitters\World.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEmitterListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEntityBuildingListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEntityListener.cs" />
+    <Compile Include="Assets\Engine\Interfaces\IJobListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IWorldListener.cs" />
+    <Compile Include="Assets\Engine\Jobs\Job.cs" />
+    <Compile Include="Assets\Engine\Jobs\Parameter.cs" />
+    <Compile Include="Assets\Engine\Jobs\Stage.cs" />
     <Compile Include="Assets\Engine\Registry\EntityRegistry.cs" />
     <Compile Include="Assets\Engine\Tools\Pathfinding\Cost.cs" />
     <Compile Include="Assets\Engine\Tools\Pathfinding\IWieghtedNode.cs" />
     <Compile Include="Assets\Engine\Tools\Pathfinding\Pathfinding.cs" />
+    <Compile Include="Assets\Unity\Components\EmitterController.cs" />
+    <Compile Include="Assets\Unity\Components\JobComponent.cs" />
     <Compile Include="Assets\Unity\Components\EntityComponent.cs" />
     <Compile Include="Assets\Unity\Components\MeshComponent.cs" />
     <Compile Include="Assets\Unity\Components\OverlayComponent.cs" />
@@ -134,13 +146,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StreamingAssets\Colormaps\LICENSE.txt" />
-    <None Include="Assets\StreamingAssets\Data\Buildings.xml" />
+    <None Include="Assets\StreamingAssets\Data\Buildings.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Assets\StreamingAssets\Data\UI\UI.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Buildings.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Characters.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Furniture.xml" />
     <None Include="Assets\StreamingAssets\Sprites\UI.xml" />
     <None Include="Assets\Utilities\Priority Queue\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\StreamingAssets\Data\Jobs.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

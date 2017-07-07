@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -109,4 +110,11 @@ public abstract class MeshComponent : MonoBehaviour, IWorldListener
     public abstract void Despawn(World world, Entity entity);
     public abstract void InstallAt(World world, EntityBuilding entity, World.Coord coord);
     public abstract void Uninstall(World world, EntityBuilding entity);
+
+    public virtual void JobScheduled(World world, Job job) { }
+
+    public virtual void SpeedChanged(World world, int speed, bool paused)
+    {
+
+    }
 }

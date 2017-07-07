@@ -7,11 +7,11 @@ using UnityEngine;
 namespace UI
 {
     [MoonSharpUserData]
-    public class Widget<T> : IWidget where T : IWidget, new()
+    public class Widget<T> : Emitter, IWidget where T : IWidget, new()
     {
         IWidget parent = null;
 
-        public string id;
+        
         public string Id {
             set {
                 id = value;
@@ -50,21 +50,12 @@ namespace UI
 
         public virtual void Update(object[] args)
         {
-            CallAction("OnUpdate", args);
+            Emit("OnUpdate", args);
         }
-
-        Dictionary<string, string> actions = new Dictionary<string, string>();
-
-        public void CallAction(string actionName, object[] args)
+        
+        public override string Category()
         {
-            if (actions.ContainsKey(actionName)) {
-                ScriptLoader.Call("UI", actions[actionName], args);
-            }
-        }
-
-        public void AddAction(string actionName, string actionFunction)
-        {
-            actions[actionName] = actionFunction;
+            return "UI";
         }
     }
 }

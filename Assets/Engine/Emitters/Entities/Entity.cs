@@ -8,16 +8,13 @@ using System.Xml.Serialization;
 using UnityEngine;
 
 [MoonSharpUserData]
-public class Entity : Emitter, IXmlSerializable {
-
-    public string id;
+public partial class Entity : Emitter, IXmlSerializable {
+    
     public World world;
     private Vector2 position;
 
-    public struct SpriteInfo {
-        public string id;
-        public string type;
-    }
+    public static string category = "entitties";
+    public override string Category() { return category; }
 
     public SpriteInfo spriteInfo = new SpriteInfo();
 
@@ -48,7 +45,7 @@ public class Entity : Emitter, IXmlSerializable {
         this.spriteInfo = other.spriteInfo;
     }
 
-    virtual public XmlSchema GetSchema()
+    override public XmlSchema GetSchema()
     {
         return null;
     }
@@ -64,7 +61,7 @@ public class Entity : Emitter, IXmlSerializable {
         }
     }
 
-    virtual public void ReadXml(XmlReader reader)
+    override public void ReadXml(XmlReader reader)
     {
         reader.Read();
         Debug.Assert(reader.Name == "Entity", 
@@ -76,34 +73,24 @@ public class Entity : Emitter, IXmlSerializable {
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                switch (reader.Name)
-                {
-                    case "Sprite":
-                        //Debug.Log("Reading sprite information.");
-                        string type = reader.GetAttribute("type");
-                        if (type != null)
-                        {
-                            //Debug.Log("Reading sprite information.");
-                            spriteInfo.type = type;
-                        }
-                        string spriteId = reader.GetAttribute("id");
-                        if(spriteId == null)
-                        {
-                            Debug.LogWarning("No id for Sprite!");
-                        } else
-                        {
-                            spriteInfo.id = spriteId;
-                        }
-                        Debug.Log(String.Format("Sprite of {0} has id {1} and type {2}", id, spriteInfo.id, spriteInfo.type));
-                        break;
-                    default:
-                        break;
-                }
+                ReadElement(reader);
             }
         }
     }
 
-    virtual public void WriteXml(XmlWriter writer)
+    public override void ReadElement(XmlReader reader)
+    {
+        switch (reader.Name)
+        {
+            case "Sprite":
+                spriteInfo = new SpriteInfo(reader);
+                break;
+            default:
+                break;
+        }
+    }
+
+    override public void WriteXml(XmlWriter writer)
     {
         throw new NotImplementedException();
     }

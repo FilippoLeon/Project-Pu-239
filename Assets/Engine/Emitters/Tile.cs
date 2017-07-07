@@ -8,6 +8,8 @@ using UnityEngine;
 public class Tile : Emitter, IFormattable, IWieghtedNode<Tile>
 {
     public World.Coord coord;
+    public static string category = "world";
+    public override string Category() { return category; }
 
     public World world;
     public EntityBuilding building = null;

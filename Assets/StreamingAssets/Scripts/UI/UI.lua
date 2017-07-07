@@ -2,8 +2,7 @@
 -- 
 
 function buildBuildingPlacementPanel(UI, world)
-	panel = Panel.Create("buildingPrototypes")
-	panel.SetLayout(WidgetLayout.Vertical)
+	panel = UI["creative_panel"]
 	for key, prototype in pairs(world.registry.buildingsRegistry)
 	do
 		print(prototype.id)
@@ -12,6 +11,7 @@ function buildBuildingPlacementPanel(UI, world)
 		button.Text = prototype.id
 		function printID()
 			print(prototype.id)
+			-- world.
 		end
 		button.OnClick(printID)
 	end

@@ -10,6 +10,11 @@ using UnityEngine;
 [MoonSharpUserData]
 public class EntityBuilding : EntityInanimated, IXmlSerializable
 {
+
+    public static new string category = "buildings";
+    public override string Category() { return category; }
+   
+
     bool installed = false;
     bool roomBoundary = false;
     bool connecting = false;
@@ -106,34 +111,35 @@ public class EntityBuilding : EntityInanimated, IXmlSerializable
         {
             if(reader.NodeType == XmlNodeType.Element)
             {
-                switch(reader.Name)
-                {
-                    case "EntityInanimate":
-                        XmlReader subReader = reader.ReadSubtree();
-                        base.ReadXml(subReader);
-                        subReader.Close();
-                        break;
-                    case "Pathfinding":
-                        string walkingSpeedAttribute = reader.GetAttribute("walkingSpeed");
-                        if (walkingSpeedAttribute != null)
-                        {
-                            walkingSpeed = float.Parse(walkingSpeedAttribute);
-                        }
-                        string roomBoundaryAttribute = reader.GetAttribute("roomBoundary");
-                        if (roomBoundaryAttribute != null)
-                        {
-                            roomBoundary = bool.Parse(roomBoundaryAttribute);
-                        }
-                        string connectingAttribute = reader.GetAttribute("connecting");
-                        if (connectingAttribute != null)
-                        {
-                            connecting = bool.Parse(connectingAttribute);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                ReadElement(reader);
             }
+        }
+    }
+
+    public override void ReadElement(XmlReader reader)
+    {
+        switch (reader.Name)
+        {
+            case "Pathfinding":
+                string walkingSpeedAttribute = reader.GetAttribute("walkingSpeed");
+                if (walkingSpeedAttribute != null)
+                {
+                    walkingSpeed = float.Parse(walkingSpeedAttribute);
+                }
+                string roomBoundaryAttribute = reader.GetAttribute("roomBoundary");
+                if (roomBoundaryAttribute != null)
+                {
+                    roomBoundary = bool.Parse(roomBoundaryAttribute);
+                }
+                string connectingAttribute = reader.GetAttribute("connecting");
+                if (connectingAttribute != null)
+                {
+                    connecting = bool.Parse(connectingAttribute);
+                }
+                break;
+            default:
+                base.ReadElement(reader);
+                break;
         }
     }
 

@@ -4,20 +4,12 @@
 		<Action event="OnInstallAt">luaAction</Action>
 		<Pathfinding walkingSpeed="0" roomBoundary="true"/>
 		<ColliderData></ColliderData>
-		<EntityInanimate>
-			<Entity>
-				<Sprite type="connecting" id="wall"/>
-			</Entity>
-		</EntityInanimate>
+		<Sprite type="connecting" id="wall"/>
 	</EntityBuilding>
 	<EntityBuilding id="door" class="EntityBuilding">
 		<Action event="OnInstallAt">luaAction</Action>
 		<Pathfinding walkingSpeed="1" roomBoundary="true" connecting="true"/>
 		<ColliderData></ColliderData>
-		<EntityInanimate>
-			<Entity>
-				<Sprite type="animated" id="door"/>
-			</Entity>
-		</EntityInanimate>
+		<Sprite type="animated" id="door"/>
 	</EntityBuilding>
 </Prototypes>

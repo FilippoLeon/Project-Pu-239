@@ -10,21 +10,42 @@ using MoonSharp.Interpreter;
 public class EntityRegistry {
 
     static string path = "Data";
+
     static public Dictionary<string, EntityBuilding> buildingsRegistry = new Dictionary<string, EntityBuilding>();
+    static public Dictionary<string, Job> jobRegistry = new Dictionary<string, Job>();
 
     public EntityRegistry()
     {
-        string buldingsPath = Path.Combine(Path.Combine(Application.streamingAssetsPath, path), "buildings.xml");
+        ReadScripts();
 
-        if (File.Exists(buldingsPath))
+        ReadData();
+    }
+
+
+    private void ReadScripts()
+    {
+        LUA.ScriptLoader.LoadScript(Job.category, "Entity/jobs.lua");
+        LUA.ScriptLoader.LoadScript(EntityBuilding.category, "Entity/buildings.lua");
+    }
+
+    private void ReadData()
+    {
+        ReadXml("buildings.xml");
+        ReadXml("Jobs.xml");
+    }
+
+    public void ReadXml(string fileName) {
+        string fullPath = PathUtilities.GetPath(path, fileName);
+
+        if (File.Exists(fullPath))
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-            XmlReader reader = XmlReader.Create(buldingsPath, settings);
-            
+            XmlReader reader = XmlReader.Create(fullPath, settings);
+
             ReadPrototypes(reader);
         } else
         {
-            Debug.LogError("Error while loading prototypes.");
+            Debug.LogError(String.Format("Error while loading prototypes from {0}.", fullPath));
         }
     }
 
@@ -39,19 +60,28 @@ public class EntityRegistry {
         {
             if(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(xmlReader.Name)
-                {
-                    case "EntityBuilding":
-                        XmlReader subReader = xmlReader.ReadSubtree();
-                        EntityBuilding entityBuilding = new EntityBuilding(subReader);
-                        buildingsRegistry.Add(entityBuilding.id, entityBuilding);
-                        subReader.Close();
-                        break;
-                    default:
-                        break;
-                }
+                ReadElement(xmlReader);
             }
         }
+    }
+
+    void ReadElement(XmlReader reader)
+    {
+        XmlReader subReader = reader.ReadSubtree();
+        switch (reader.Name)
+        {
+            case "EntityBuilding":
+                EntityBuilding entityBuilding = new EntityBuilding(subReader);
+                buildingsRegistry.Add(entityBuilding.id, entityBuilding);
+                break;
+            case "Job":
+                Job newJob = new Job(subReader);
+                jobRegistry.Add(newJob.id, newJob);
+                break;
+            default:
+                break;
+        }
+        subReader.Close();
     }
 
     internal static Entity InstantiateCharacter()

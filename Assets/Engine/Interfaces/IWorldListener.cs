@@ -9,5 +9,8 @@ public interface IWorldListener : IEmitterListener
 
     void Uninstall(World world, EntityBuilding entity);
 
+    void JobScheduled(World world, Job job);
+
     void WorldCreated(World world);
+    void SpeedChanged(World world, int speed, bool paused);
 }

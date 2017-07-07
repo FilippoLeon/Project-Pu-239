@@ -1,4 +1,5 @@
 ﻿using MoonSharp.Interpreter;
+using Priority_Queue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +10,66 @@ public class World : Emitter {
 
     Tile[,] tiles;
 
+    public Dictionary<string, SimplePriorityQueue<Job>> jobs = new Dictionary<string, SimplePriorityQueue<Job>>();
+
+    public static string category = "world";
+    public override string Category() { return category; }
+
     public int sizeX, sizeY;
 
     List<EntityAnimated> characters = new List<EntityAnimated>();
     Emitter selected;
     public Tile selectedTile;
+
+
+    public bool Paused
+    {
+        get
+        {
+            return paused;
+        }
+        set
+        {
+            paused = value;
+        }
+    }
+
+    private bool paused = true;
+    private int speed = 1;
+    private int elapsed = 0;
+
+    private int elapsedLong = 0;
+    private int elapsedLongLong = 0;
+    static private int ticLength = 4;
+    static private int longTicLength = ticLength * 60;
+    static private int longLongTicLength = longTicLength * 5;
+
+
+    public static int[] speedRatio = new int[] { 1, 2, 4 };
+    private static int maxSpeed = speedRatio.Length - 1;
+    private static int minSpeed = 0;
+
+    public EntityRegistry registry;
+
+    public void IncreaseSpeed()
+    {
+        Speed = Math.Min(Speed + 1, maxSpeed);
+    }
+
+    public void DecreaseSpeed()
+    {
+        Speed = Math.Max(Speed - 1, minSpeed);
+    }
+    public void CycleSpeed()
+    {
+        if (Speed == maxSpeed) Speed = minSpeed;
+        else Speed = Math.Min(Speed + 1, maxSpeed);
+    }
+
+    public void SetSpeed(int newSpeed)
+    {
+        Speed = Math.Min(Math.Max(newSpeed, minSpeed), maxSpeed);
+    }
 
     public Emitter Selected
     {
@@ -25,6 +81,44 @@ public class World : Emitter {
         set
         {
             selected = value;
+        }
+    }
+
+    public int Speed
+    {
+        get
+        {
+            return speed;
+        }
+
+        internal set
+        {
+            speed = value;
+            SppedChanged(speed);
+        }
+    }
+    
+
+    internal void Update()
+    {
+        if (paused) return;
+        elapsed += 1;
+        elapsedLong += 1;
+        elapsedLongLong += 1;
+        if (elapsed >= ticLength / speedRatio[Speed])
+        {
+            Tic();
+            if (elapsedLong >= longTicLength / speedRatio[Speed])
+            {
+                TicLong();
+                if (elapsedLongLong >= longLongTicLength / speedRatio[Speed])
+                {
+                    TicLongLong();
+                    elapsedLongLong = 0;
+                }
+                elapsedLong = 0;
+            }
+            elapsed = 0;
         }
     }
 
@@ -108,12 +202,10 @@ public class World : Emitter {
             return String.Format("{0}x{1}", x, y);
         }
     }
-
-    public EntityRegistry registry;
-
-    internal void SetRegistry(EntityRegistry entityRegistry)
+    
+    internal void SetRegistry()
     {
-        registry = entityRegistry;
+        registry = new EntityRegistry();
     }
 
     internal EntityAnimated GetCharacter(string name)
@@ -146,6 +238,22 @@ public class World : Emitter {
         }
 
         WorldCreated();
+    }
+
+    public void ScheduleJob(Job prototype, object[] parameters)
+    {
+        Job instance = new Job(prototype);
+        if(!jobs.ContainsKey(instance.jobCategory))
+        {
+            jobs[instance.jobCategory] = new SimplePriorityQueue<Job>();
+        }
+        jobs[instance.jobCategory].Enqueue(instance, 1);
+        instance.Schedule(parameters);
+
+        foreach(IWorldListener listener in listeners)
+        {
+            listener.JobScheduled(this, instance);
+        }
     }
     
     public Tile GetTileAt(Coord coord)
@@ -281,5 +389,15 @@ public class World : Emitter {
             if (listener is IWorldListener) ((IWorldListener) listener).WorldCreated(this);
         }
     }
-    
+
+    private void SppedChanged(int speed)
+    {
+
+        foreach (IWorldListener listener in listeners)
+        {
+            if (listener is IWorldListener) ((IWorldListener)listener).SpeedChanged(this, speed, paused);
+        }
+
+        Emit("OnSpeedChange", new object[] { this, speed, paused });
+    }
 }

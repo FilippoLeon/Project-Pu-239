@@ -124,5 +124,12 @@ public class WorldComponent : MeshComponent {
 
         return null;
     }
-    
+
+    public override void JobScheduled(World world, Job job)
+    {
+        base.JobScheduled(world, job);
+
+        JobComponent jobComponent = JobComponent.ScheduleJobControllerInWorld(this, job);
+        job.Connect(jobComponent);
+    }
 }

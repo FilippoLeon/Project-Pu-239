@@ -5,7 +5,6 @@ namespace UI
 {
     public interface IWidgetContainer : IWidget
     {
-        LayoutGroup Layout { get; set; }
 
         IEnumerable<IWidget> Childs { get; }
     }

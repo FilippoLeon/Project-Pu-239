@@ -47,8 +47,10 @@ public class EntityAnimated : Entity
         theta = 0f;
     }
 
-    public void Tic()
+    virtual public void Tic()
     {
+
+
         UpdatePosition();
     }
 
@@ -95,8 +97,8 @@ public class EntityAnimated : Entity
 
         LinkedList<Tile> list = Pathfinding.ReconstructPath(comeFrom, startTile, endTile);
 
-        Vector2 firstCoord = list.First.Value.coord.ToVector2();
-        Vector2 secondCoord = list.First.Next.Value.coord.ToVector2();
+        //Vector2 firstCoord = list.First.Value.coord.ToVector2();
+        //Vector2 secondCoord = list.First.Next.Value.coord.ToVector2();
 
         // Remove first tile if is faster to go to the second tile
             list.RemoveFirst();

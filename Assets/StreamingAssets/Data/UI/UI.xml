@@ -1,18 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Canvas>
-	<Panel id="creative_panel" anchorMin="0,0" anchorMax="1,0.1">
-		<Action name="OnCreate">buildBuildingPlacementPanel</Action>
+	<Panel id="creative_panel" layout="horizontal" anchorMin="0,0" anchorMax="1,0.1">
+		<Action event="OnCreate" type="script">buildBuildingPlacementPanel</Action>
 	</Panel>
-	<Panel id="slection_view" layout="grid" gridX="2" anchorMin="0,0.9" anchorMax="1,1">
+	<Panel id="slection_view" layout="horizontal" anchorMin="0.4,0.95" anchorMax="1,1">
 		<Label><Text>Tile</Text></Label>
 		<Label><Text>Tile2</Text></Label>
 		<Label><Text>Coord:</Text></Label>
 		<Label id="tile_coord"><Text>N/D</Text></Label>
 		<Button>
 			<Text>Button</Text>
-			<Action name="OnClick"></Action>
+			<Action event="OnClick"></Action>
 		</Button>
 		
-		<Action name="OnUpdate">SelectionViewOnUpdate</Action>
+		<Action event="OnUpdate"  type="script">SelectionViewOnUpdate</Action>
 	</Panel>
+  <Panel id="time_manager" layout="horizontal" anchorMin="0,0.95" anchorMax="0.5,1">
+    <Button size="" type="simple">
+      <Sprite category="UI" id="pause"/>
+      <Alt>Cyclespeed</Alt>
+      <Text>Play</Text>
+      <Action event="OnClick">
+        function (world)
+            print("pause");
+            world.Paused = not world.Paused;
+        end
+      </Action>
+    </Button>
+    <Button size="" type="simple">
+      <Sprite category="UI" id="speed0"/>
+      <Alt>Cyclespeed</Alt>
+      <Text>Play</Text>
+      <Action event="OnClick">
+        function (world)
+          print("click0");
+          world.SetSpeed(0);
+        end
+      </Action>
+    </Button>
+    <Button size="" type="simple">
+      <Sprite category="UI" id="speed1"/>
+      <Alt>Cyclespeed</Alt>
+      <Text>Play</Text>
+      <Action event="OnClick">
+        function (world)
+          print("click1");
+          world.SetSpeed(1);
+        end
+      </Action>
+    </Button>
+    <Button size="" type="simple">
+      <Sprite category="UI" id="speed2"/>
+      <Alt>Cyclespeed</Alt>
+      <Text>Play</Text>
+      <Action event="OnClick">
+        function (world)
+          print("click2");
+          world.SetSpeed(2);
+        end
+      </Action>
+    </Button>
+    <Action event="OnCreate">
+      function (UI, world)
+      function changeButtonTint(world, speed, paused)
+      print(string.format("Status %s %i %s", world.ToString(), speed, tostring(paused)));
+      end
+      world.AddAction("OnSpeedChange", changeButtonTint);
+      end
+    </Action>
+  </Panel>
 </Canvas>

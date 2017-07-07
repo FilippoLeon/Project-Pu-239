@@ -37,19 +37,21 @@ public class EntityInanimated : Entity, IXmlSerializable
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                switch (reader.Name)
-                {
-                    case "Entity":
-                        XmlReader subReader = reader.ReadSubtree();
-                        base.ReadXml(subReader);
-                        subReader.Close();
-                        break;
-                    default:
-                        break;
-                }
+                ReadElement(reader);
             }
         }
     }
+
+    public override void ReadElement(XmlReader reader)
+    {
+        switch (reader.Name)
+        {
+            default:
+                base.ReadElement(reader);
+                break;
+        }
+    }
+
 
     override public void WriteXml(XmlWriter writer)
     {

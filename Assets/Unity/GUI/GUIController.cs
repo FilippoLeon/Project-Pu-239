@@ -23,7 +23,6 @@ public class GUIController : MonoBehaviour
         
         LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(Panel));
         LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(UI.Button));
-        LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(Panel.WidgetLayout));
 
         BuildUI();
 
@@ -46,14 +45,14 @@ public class GUIController : MonoBehaviour
             {
                 case XmlNodeType.Element:
                     XmlReader subTree = reader.ReadSubtree();
-                    ReadElement(subTree);
+                    ReadElement<Widget<Panel>>(subTree);
                     subTree.Close();
                     break;
             }
         }
     }
 
-    public static void ReadElement(XmlReader reader, IWidget parent = null)
+    public static void ReadElement<T>(XmlReader reader, Widget<T> parent = null) where T: IWidget, new()
     {
         reader.Read();
         IWidget child = null;
@@ -68,20 +67,18 @@ public class GUIController : MonoBehaviour
             case "Button":
                 child = UI.Button.Create(reader, parent);
                 break;
-            case "Action":
-                string actionName = reader.GetAttribute("name");
-                string actionFunction = reader.ReadElementContentAsString();
-                if (actionName != null)
-                {
-                    parent.AddAction(actionName, actionFunction);
-                }
+            default:
+                parent.ReadElement(reader);
                 break;
         }
 
         if(child != null)
         {
             childs.Add(child.Id, child);
-            child.CallAction("OnCreate", new object[] { childs, WorldController.StaticWorld });
+            if(child is IEmitter)
+            {
+                (child as IEmitter).Emit("OnCreate", new object[] { childs, WorldController.StaticWorld });
+            }
         }
       
     }

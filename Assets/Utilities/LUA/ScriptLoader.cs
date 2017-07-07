@@ -48,7 +48,7 @@ namespace LUA
             Load(category, info);
         }
 
-        public static void Load(string category, FileInfo file)
+        private static void Load(string category, FileInfo file)
         {
             StreamReader reader = new StreamReader(file.OpenRead());
             string textScript = reader.ReadToEnd();

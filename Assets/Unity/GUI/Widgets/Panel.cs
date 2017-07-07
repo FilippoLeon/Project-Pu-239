@@ -13,18 +13,7 @@ namespace UI
         Image background;
 
         private LayoutGroup layout;
-        public LayoutGroup Layout
-        {
-            get
-            {
-                return layout;
-            }
 
-            set
-            {
-                layout = value;
-            }
-        }
         List<IWidget> childs = new List<IWidget>();
         public IEnumerable<IWidget> Childs
         {
@@ -37,7 +26,6 @@ namespace UI
         public Panel()
         {
             GameObject.AddComponent<CanvasRenderer>();
-            Layout = GameObject.AddComponent<HorizontalLayoutGroup>();
             background = GameObject.AddComponent<Image>();
             background.type = Image.Type.Sliced;
             background.sprite = SpriteLoader.TryLoadSprite("UI", "panel_background");
@@ -45,6 +33,23 @@ namespace UI
             SetAnchor(new Vector2(0, 0), new Vector2(1, 0.1f));
             SetSize();
             SetMargin();
+        }
+
+        public void SetLayout(string layoutName)
+        {
+            switch (layoutName)
+            {
+                case "grid":
+                    layout = GameObject.AddComponent<GridLayoutGroup>();
+                    break;
+                case "horizontal":
+                    layout = GameObject.AddComponent<HorizontalLayoutGroup>();
+                    break;
+                case "vertical":
+                    layout = GameObject.AddComponent<VerticalLayoutGroup>();
+                    break;
+            }
+            
         }
 
         public void SetAnchor(Vector2 anchorMin, Vector2 anchorMax)
@@ -57,7 +62,7 @@ namespace UI
         {
             GameObject.GetComponent<RectTransform>().offsetMin = new Vector2(50, 10);
             //GameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
-            GameObject.GetComponent<RectTransform>().offsetMax = new Vector2(-10,-50);
+            GameObject.GetComponent<RectTransform>().offsetMax = new Vector2(-50, -10);
         }
 
         public void SetMargin()
@@ -68,27 +73,8 @@ namespace UI
                 (layout as HorizontalOrVerticalLayoutGroup).spacing = 10;
             }
         }
-
-        public void ReadXml(XmlReader reader)
-        {
-
-        }
-
-        void ReadInnerElement(XmlReader reader)
-        {
-
-        }
-
-        public enum WidgetLayout
-        {
-            Horizontal, Vertical, Grid,
-        }
-
-        public void SetLayout(WidgetLayout layout)
-        {
-            Layout.SetLayoutHorizontal();
-        }
-
+        
+        
         public void Add(IWidget child)
         {
             childs.Add(child);
@@ -119,10 +105,23 @@ namespace UI
                 panel.SetAnchor(anchorMin, anchorMax);
             }
             string layout = reader.GetAttribute("layout");
+            panel.SetLayout(layout);
             switch(layout)
             {
                 case "grid":
-                    panel.SetLayout(WidgetLayout.Grid);
+                    if(reader.GetAttribute("gridX") != null)
+                    {
+                        (panel.layout as GridLayoutGroup).constraint = GridLayoutGroup.Constraint.FixedRowCount;
+                        (panel.layout as GridLayoutGroup).constraintCount = Convert.ToInt32(reader.GetAttribute("gridX"));
+                    } else if(reader.GetAttribute("gridY") != null)
+                    {
+                        (panel.layout as GridLayoutGroup).constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                        (panel.layout as GridLayoutGroup).constraintCount = Convert.ToInt32(reader.GetAttribute("gridY"));
+                    }
+                    break;
+                case "horizontal":
+                    break;
+                case "vertical":
                     break;
             }
 

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 public class Room : Emitter, IFormattable, IWieghtedNode<Room>
 {
-    int id;
     static int idCounter = 0;
+    public static string category = "world";
+    public override string Category() { return category; }
 
     static Room defaultRoom = new Room();
     static Room impassableRoom = new Room(-1);
@@ -15,18 +16,18 @@ public class Room : Emitter, IFormattable, IWieghtedNode<Room>
     {
         get
         {
-            return id;
+            return Convert.ToInt32(id);
         }
     }
 
     private Room(int id)
     {
-        this.id = id;
+        this.id = Convert.ToString(id);
     }
 
     public Room()
     {
-        id = idCounter++;
+        id = Convert.ToString(idCounter++);
     }
 
     public static Room Default()

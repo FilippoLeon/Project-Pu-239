@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Prototypes>
+	<Job id="construct_building" category="build">
+    <Parameters>
+      <String>buildingId</String>
+      <World.Coord>buildingLocation</World.Coord>
+    </Parameters>
+    <Stage id="stage1" cost="100">
+      <Skills>
+        <Contruction>5</Contruction>
+        <Creativity>3</Creativity>
+      </Skills>
+      <Resources>
+        <Item id="iron">44</Item>
+      </Resources>
+      <Target type="coordinate" position="adjacent">
+        buildingLocation
+      </Target>
+      <Action event="OnComplete">
+        function (world, parameters)
+          world.InstallAt(parameters["buildingId"], parameters["buildingPosition"])
+        end
+      </Action>
+    </Stage>
+    <Stage id="stage2">
+
+    </Stage>
+	</Job>
+</Prototypes>

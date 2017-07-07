@@ -129,6 +129,12 @@ public class SpriteLoader
         }
     }
 
+    internal static Sprite Load(SpriteInfo spriteInfo)
+    {
+        if (spriteInfo.category == null) return GetSprite(spriteInfo.id);
+        return TryLoadSprite(spriteInfo.category, spriteInfo.id);
+    }
+
     static public int LoadSprites(XmlReader reader, Texture2D tex)
     {
         int spriteCount = 0;

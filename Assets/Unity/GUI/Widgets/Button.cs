@@ -24,9 +24,7 @@ namespace UI
                 textComponent.text = value;
             }
         }
-
-
-
+        
         public Button()
         {
             backgroundComponent = GameObject.AddComponent<Image>();
@@ -42,7 +40,18 @@ namespace UI
             textComponent.alignment = TextAnchor.MiddleCenter;
             textComponent.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
         }
-
+        
+        public override void AddAction(ActionType type, Action action)
+        {
+            if(type == ActionType.OnClick) {
+                buttonComponent.onClick.AddListener(
+                    () => action.Call( this, new object[] { WorldController.StaticWorld })
+                    );
+            }
+            base.AddAction(type, action);
+        }
+        
+        // MoonSharp.Interpreter.Closure
         public void OnClick(MoonSharp.Interpreter.Closure callback)
         {
             buttonComponent.onClick.AddListener(() => callback.Call());
@@ -65,25 +74,42 @@ namespace UI
             {
                 button.Id = reader.GetAttribute("id");
             }
+            String type = reader.GetAttribute("type");
             button.SetParent(parent);
 
             while (reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.Name == "Text")
+                    switch(reader.Name)
                     {
-                        button.Text = reader.ReadElementContentAsString();
-                    }
-                    else
-                    {
-                        XmlReader subReader = reader.ReadSubtree();
-                        GUIController.ReadElement(subReader, button);
-                        subReader.Close();
+                        case "Text":
+                            button.Text = reader.ReadElementContentAsString();
+                            break;
+                        case "Sprite":
+                            Sprite sprite = SpriteLoader.Load(new SpriteInfo(reader));
+                            button.backgroundComponent.sprite = sprite;
+                            break;
+                        default:
+                            XmlReader subReader = reader.ReadSubtree();
+                            GUIController.ReadElement(subReader, button);
+                            subReader.Close();
+                            break;
                     }
                 }
             }
 
+            switch(type)
+            {
+                case "sliced":
+                default:
+                    button.backgroundComponent.type = Image.Type.Sliced;
+                    break;
+                case "simple":
+                    button.backgroundComponent.type = Image.Type.Simple;
+                    button.backgroundComponent.preserveAspect = true;
+                    break;
+            }
 
             return button;
         }

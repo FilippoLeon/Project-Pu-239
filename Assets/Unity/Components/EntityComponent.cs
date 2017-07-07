@@ -3,24 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
-
-    SpriteRenderer spriteRenderer;
-
-    Entity entity;
-    public Emitter Emitter
-    {
-        get
-        {
-            return entity;
-        }
-
-        set
-        {
-            entity = (Entity) value;
-        }
-    }
-
+public class EntityComponent : EmitterController, IEntityBuildingListener {
+    
     public static EntityComponent SpawnEntityControllerInWorld(
         WorldComponent worldComponent, Entity entity, 
         Vector2 coord)
@@ -42,11 +26,6 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
         entityComponent.spriteRenderer.sprite = SpriteLoader.GetSprite("test");
 
         return entityComponent;
-    }
-
-    public void Event(string signal, object[] args)
-    {
-        throw new NotImplementedException();
     }
 
     public void Spawn(World world, Vector2 position)
@@ -71,7 +50,7 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
     {
         if (Emitter is Entity)
         {
-            Entity.SpriteInfo spriteInfo = (Emitter as Entity).spriteInfo;
+            SpriteInfo spriteInfo = (Emitter as Entity).spriteInfo;
             if (spriteInfo.type == "connecting")
             {
                 spriteRenderer.sprite = SpriteLoader.GetSprite(spriteInfo.id, ((EntityBuilding)Emitter).GetConnectingNeighbours());
@@ -81,22 +60,7 @@ public class EntityComponent : MonoBehaviour, IEntityBuildingListener {
             }
         }
     }
-
-    //private void SetPosition(Vector2 position)
-    //{
-    //    this.transform.position = position;
-    //}
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+    
     public void PositionChanged(World world, Vector2 position)
     {
         this.transform.position = position;
