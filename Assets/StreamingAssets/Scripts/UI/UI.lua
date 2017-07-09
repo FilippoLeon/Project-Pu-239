@@ -12,6 +12,7 @@ function buildBuildingPlacementPanel(UI, world)
 		function printID()
 			print(prototype.id)
 			-- world.
+			world.SetMode(WorldMode.Build, { prototype.id });
 		end
 		button.OnClick(printID)
 	end

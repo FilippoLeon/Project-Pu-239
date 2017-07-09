@@ -28,15 +28,15 @@ public partial class Job : Emitter, IXmlSerializable
     {
         jobCategory = other.jobCategory;
 
-        foreach(String key in parameters.Keys)
+        foreach(String key in other.parameters.Keys)
         {
-            Parameter newParameter = new Parameter(parameters[key]);
+            Parameter newParameter = new Parameter(other.parameters[key]);
             parametersList.Add(newParameter);
             parameters[key] = newParameter;
         }
 
         currentStage = other.currentStage;
-        foreach (Stage otherStage in stages)
+        foreach (Stage otherStage in other.stages)
         {
             stages.Add(new Stage(otherStage, this));
         }
@@ -47,6 +47,19 @@ public partial class Job : Emitter, IXmlSerializable
         ReadXml(reader);
     }
     
+    internal bool CanProgress()
+    {
+        return true;
+    }
+    
+    internal void Progress(Entity entity, World world)
+    {
+        CurrentStage().DoWork(entity, world);
+        if(CurrentStage().Done())
+        {
+            NextStage();
+        }
+    }
     public override void ReadXml(XmlReader reader)
     {
         reader.Read();
@@ -85,9 +98,17 @@ public partial class Job : Emitter, IXmlSerializable
 
     public void Schedule(object[] newJobParameters)
     {
+        Debug.Log(String.Format("New job {0} is scheduled {1} at {2}.", 
+            id, newJobParameters[0], newJobParameters[1]));
         for (int i = 0; i < newJobParameters.Length; i++)
         {
             parametersList[i].value = Convert.ChangeType(newJobParameters[i], parametersList[i].type);
+        }
+
+        foreach(IEmitterListener listener in listeners)
+        {
+            // FIX THIS
+            ((IJobListener)listener).Schedule(null);
         }
     }
 
@@ -123,32 +144,36 @@ public partial class Job : Emitter, IXmlSerializable
         {
             if (reader.NodeType == XmlNodeType.Element)
             {
-                AddParameter(reader.ReadElementContentAsString(), new Parameter(null, Type.GetType(reader.Name)));
+                String name = reader.Name;
+                AddParameter(reader.ReadElementContentAsString(), 
+                    new Parameter(null, ParseAsTypename(name))
+                    );
             }
         }
+    }
+
+    private Type ParseAsTypename(string str)
+    {
+        Type type = Type.GetType(str);
+        if (type == null)
+        {
+            switch (str)
+            {
+                case "String":
+                    return typeof(String);
+                case "World.Coord":
+                    return typeof(World.Coord);
+                default:
+                    Debug.LogError(String.Format("Unrekognised type: {0}", str));
+                    break;
+            }
+        }
+        return type;
     }
 
     public override void WriteXml(XmlWriter writer)
     {
         throw new NotImplementedException();
-    }
-
-    public class Parameter
-    {
-        public object value;
-        public Type type;
-
-        public Parameter(Parameter other)
-        {
-            this.value = other.value;
-            this.type = other.type;
-        }
-
-        public Parameter(object obj, Type type)
-        {
-            this.value = obj;
-            this.type = type;
-        }
     }
 
     public void AddParameter(String name, Parameter parameter)

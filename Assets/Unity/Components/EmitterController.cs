@@ -6,7 +6,7 @@ public class EmitterController : MonoBehaviour, IEmitterListener
 
     protected SpriteRenderer spriteRenderer;
 
-    protected Entity entity;
+    protected Emitter entity;
     public Emitter Emitter
     {
         get
@@ -16,7 +16,7 @@ public class EmitterController : MonoBehaviour, IEmitterListener
 
         set
         {
-            entity = (Entity)value;
+            entity = value;
         }
     }
     

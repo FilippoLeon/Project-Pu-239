@@ -7,7 +7,7 @@ using System.Xml;
 namespace UI
 {
     [MoonSharpUserData]
-    public class Button : Widget<Button>
+    public class Button : Widget
     {
         Image backgroundComponent;
         UnityEngine.UI.Button buttonComponent;
@@ -30,7 +30,7 @@ namespace UI
             backgroundComponent = GameObject.AddComponent<Image>();
             backgroundComponent.type = Image.Type.Sliced;
             backgroundComponent.sprite = SpriteLoader.TryLoadSprite("UI", "button_background");
-            
+            backgroundComponent.SetNativeSize();
 
             buttonComponent = GameObject.AddComponent<UnityEngine.UI.Button>();
 
@@ -39,8 +39,19 @@ namespace UI
             textComponent = GameObject.GetComponentInChildren<Text>();
             textComponent.alignment = TextAnchor.MiddleCenter;
             textComponent.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            textComponent.rectTransform.anchorMin = new Vector2(0, 0);
+            textComponent.rectTransform.anchorMax = new Vector2(1, 1);
+            textComponent.rectTransform.offsetMin = Vector2.zero;
+            textComponent.rectTransform.offsetMax = Vector2.zero;
+
+            SetNonExpanding();
         }
-        
+
+        public override void SetNonExpanding(int minWidth = -1)
+        {
+            base.SetNonExpanding((int) backgroundComponent.sprite.rect.width);
+        }
+
         public override void AddAction(ActionType type, Action action)
         {
             if(type == ActionType.OnClick) {
@@ -62,7 +73,7 @@ namespace UI
             Id = id;
         }
 
-        public new static Button Create(string id)
+        public static Button Create(string id)
         {
             return new Button(id);
         }
@@ -70,11 +81,10 @@ namespace UI
         public static Button Create(XmlReader reader, IWidget parent = null)
         {
             Button button = new Button();
-            if (reader.GetAttribute("id") != null)
-            {
-                button.Id = reader.GetAttribute("id");
-            }
+            button.ReadElement(reader, parent);
+
             String type = reader.GetAttribute("type");
+            
             button.SetParent(parent);
 
             while (reader.Read())
@@ -89,6 +99,9 @@ namespace UI
                         case "Sprite":
                             Sprite sprite = SpriteLoader.Load(new SpriteInfo(reader));
                             button.backgroundComponent.sprite = sprite;
+                            //button.backgroundComponent.color = new Color(0, 1, 0, 0.5f);
+                            //button.buttonComponent.colors. = new ColorBlock();
+                            //color
                             break;
                         default:
                             XmlReader subReader = reader.ReadSubtree();
@@ -113,5 +126,20 @@ namespace UI
 
             return button;
         }
+
+        public void SetTint(Color color)
+        {
+            backgroundComponent.color = color;
+        }
+        
+        public void SetColorBlock(Color normal, Color pressed, Color disabled)
+        {
+            ColorBlock block = new ColorBlock();
+            block.normalColor = normal;
+            block.pressedColor = pressed;
+            block.disabledColor = disabled;
+            buttonComponent.colors = block;
+        }
     }
+
 }

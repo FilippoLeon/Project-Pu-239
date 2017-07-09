@@ -114,6 +114,8 @@ public class OverlayComponent : MeshComponent
                 overlayTexture.SetPixels(i * tileSizeX, j * tileSizeY, tileSizeX, tileSizeY,
                     GetPalettePixels(Heatmap(i, j) % 255)
                     );
+
+                //CopyTexture(Texture src, int srcElement, int srcMip, int srcX, int srcY, int srcWidth, int srcHeight, overlayTexture, , 0, int dstX, int dstY);
             }
         }
         overlayTexture.Apply(false);

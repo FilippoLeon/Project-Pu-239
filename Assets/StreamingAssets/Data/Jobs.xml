@@ -13,12 +13,14 @@
       <Resources>
         <Item id="iron">44</Item>
       </Resources>
-      <Target type="coordinate" position="adjacent">
-        buildingLocation
-      </Target>
+      <Target type="coordinate" position="adjacent">buildingLocation</Target>
       <Action event="OnComplete">
         function (world, parameters)
-          world.InstallAt(parameters["buildingId"], parameters["buildingPosition"])
+          print( parameters["buildingId"].value)
+          print( parameters["buildingLocation"].value)
+          world.InstallAt(EntityRegistry.InstantiateEntityBuilding(parameters["buildingId"].value), 
+                  parameters["buildingLocation"].value
+                  );
         end
       </Action>
     </Stage>

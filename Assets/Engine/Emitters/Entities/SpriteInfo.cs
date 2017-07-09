@@ -46,6 +46,6 @@ public class SpriteInfo {
             this.id = spriteId;
         }
         string category = reader.GetAttribute("category");
-        Debug.Log(String.Format("Sprite of {0} has id {1} and type {2}", id, this.id, this.type));
+        //Debug.Log(String.Format("Sprite of {0} has id {1} and type {2}", id, this.id, this.type));
     }
 }

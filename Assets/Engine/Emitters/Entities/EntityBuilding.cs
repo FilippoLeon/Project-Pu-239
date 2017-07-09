@@ -106,7 +106,7 @@ public class EntityBuilding : EntityInanimated, IXmlSerializable
             );
         if (id == null) id = reader.GetAttribute("id");
 
-        Debug.Log(string.Format("Reading 'EntityBuilding' from Xml, id = '{0}'", id));
+        //Debug.Log(string.Format("Reading 'EntityBuilding' from Xml, id = '{0}'", id));
         while(reader.Read())
         {
             if(reader.NodeType == XmlNodeType.Element)

@@ -7,7 +7,7 @@ using System.Xml;
 namespace UI
 {
     [MoonSharpUserData]
-    public class Label : Widget<Button>
+    public class Label : Widget
     {
         Text textComponent;
         
@@ -22,9 +22,7 @@ namespace UI
                 textComponent.text = value;
             }
         }
-
-
-
+        
         public Label()
         {
             textComponent = GameObject.AddComponent<Text>();
@@ -37,7 +35,7 @@ namespace UI
             Id = id;
         }
 
-        public new static Label Create(string id)
+        public static Label Create(string id)
         {
             return new Label(id);
         }
@@ -45,9 +43,7 @@ namespace UI
         public static Label Create(XmlReader reader, IWidget parent = null)
         {
             Label label = new Label();
-            if (reader.GetAttribute("id") != null) {
-                label.Id = reader.GetAttribute("id");
-            }
+            label.ReadElement(reader, parent);
             label.SetParent(parent);
 
             while(reader.Read())

@@ -5,13 +5,17 @@ using UnityEngine;
 
 public class JobComponent : EmitterController, IJobListener {
 
+    public Job job;
+
     public static JobComponent ScheduleJobControllerInWorld(
         WorldComponent worldComponent, Job job)
     {
         GameObject entityObject = new GameObject();
         JobComponent entityComponent = entityObject.AddComponent<JobComponent>();
         entityObject.transform.SetParent(worldComponent.transform);
-        //entityComponent.SetPosition(coord);
+
+        entityObject.name = job.id + "_indicator";
+        entityComponent.job = job;
 
         PolygonCollider2D collider = entityObject.AddComponent<PolygonCollider2D>();
         collider.points = new Vector2[] {
@@ -29,6 +33,6 @@ public class JobComponent : EmitterController, IJobListener {
 
     public void Schedule(World world)
     {
-        throw new NotImplementedException();
+        transform.position = ((World.Coord) job.GetTarget().value).ToVector2();
     }
 }

@@ -12,6 +12,14 @@ public class EntityHuman : EntityAnimated {
         if(currentJob == null)
         {
             FindJob();
+        } else
+        {
+            if(currentJob.CanProgress())
+            {
+                currentJob.Progress(this, world);
+            } else {
+
+            }
         }
 
         base.Tic();
@@ -19,7 +27,7 @@ public class EntityHuman : EntityAnimated {
 
     private void FindJob()
     {
-        //currentJob = world.jobs["building"].Dequeue();
+        currentJob = world.jobs["build"].Dequeue();
         //throw new NotImplementedException();
     }
 }

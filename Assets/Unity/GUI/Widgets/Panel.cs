@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace UI
 {
     [MoonSharpUserData]
-    public class Panel : Widget<Panel>, IWidgetContainer
+    public class Panel : Widget, IWidgetContainer
     {
         Image background;
 
@@ -44,9 +44,11 @@ namespace UI
                     break;
                 case "horizontal":
                     layout = GameObject.AddComponent<HorizontalLayoutGroup>();
+                    SetChildExpand(false);
                     break;
                 case "vertical":
                     layout = GameObject.AddComponent<VerticalLayoutGroup>();
+                    SetChildExpand(false);
                     break;
             }
             
@@ -89,6 +91,20 @@ namespace UI
         {
             return new Panel(id);
         }
+        public void SetChildExpand(bool expand = true)
+        {
+            if(layout is HorizontalOrVerticalLayoutGroup)
+            {
+                (layout as HorizontalOrVerticalLayoutGroup).childForceExpandWidth = expand;
+            }
+        }
+
+        public void AddContentSizeFitter(ContentSizeFitter.FitMode mode)
+        {
+            ContentSizeFitter fitter = GameObject.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = mode;
+        }
+
         public static Panel Create(XmlReader reader, IWidget parent = null)
         {
             Panel panel = new Panel();
@@ -122,6 +138,18 @@ namespace UI
                 case "horizontal":
                     break;
                 case "vertical":
+                    break;
+            }
+
+            switch(reader.GetAttribute("content"))
+            {
+                case "minFit":
+                    panel.AddContentSizeFitter(ContentSizeFitter.FitMode.MinSize);
+                    break;
+                case "preferredFit":
+                    panel.AddContentSizeFitter(ContentSizeFitter.FitMode.PreferredSize);
+                    break;
+                default:
                     break;
             }
 

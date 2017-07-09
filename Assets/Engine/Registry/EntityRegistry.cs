@@ -24,6 +24,8 @@ public class EntityRegistry {
 
     private void ReadScripts()
     {
+        LUA.ScriptLoader.RegisterPlaceolder(null, typeof(EntityRegistry));
+
         LUA.ScriptLoader.LoadScript(Job.category, "Entity/jobs.lua");
         LUA.ScriptLoader.LoadScript(EntityBuilding.category, "Entity/buildings.lua");
     }
@@ -91,7 +93,7 @@ public class EntityRegistry {
         return entityHuman;
     }
 
-    internal static EntityBuilding InstantiateEntityBuilding(string id)
+    public static EntityBuilding InstantiateEntityBuilding(string id)
     {
         return new EntityBuilding(buildingsRegistry[id]);
     }

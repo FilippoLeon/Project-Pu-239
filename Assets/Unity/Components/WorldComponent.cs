@@ -95,18 +95,40 @@ public class WorldComponent : MeshComponent {
     
     public void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             Vector2 pos = MouseToVector2(Input.mousePosition);
+            World.Coord coord = MouseToCoordinate(Input.mousePosition);
+            switch (world.selectedMode) {
+                case World.WorldMode.None:
 
-            EntityComponent entityComponent = GetEmitterAt(pos);
-            if(entityComponent != null)
-            {
-                world.Selected = entityComponent.Emitter;
-            } else
-            {
-                world.selectedTile = world.GetTileAt(pos);
+                    EntityComponent entityComponent = GetEmitterAt(pos);
+                    if (entityComponent != null)
+                    {
+                        world.Selected = entityComponent.Emitter;
+                        // TODO: move selector marker following this entity
+                    } else
+                    {
+                        try
+                        {
+                            world.selectedTile = world.GetTileAt(pos);
+                        } catch
+                        {
+
+                        }
+                        // TODO: move marker at this position
+                    }
+                    break;
+                case World.WorldMode.Build:
+                    world.ScheduleJob(EntityRegistry.jobRegistry["construct_building"], 
+                        new object[] { world.modeArgs[0], coord }
+                        );
+                    break;
             }
+        }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            world.SetMode(World.WorldMode.None, null);
         }
     }
 

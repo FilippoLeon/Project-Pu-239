@@ -95,11 +95,12 @@ public class SpriteLoader
         string fileName = path.Name.Split('.')[0];
         //File.Name
 
-        Debug.Log(string.Format("Loading \"{0}\" ({1})...", path, fileName));
+        //Debug.Log(string.Format("Loading \"{0}\" ({1})...", path, fileName));
 
         byte[] imageData = File.ReadAllBytes(path.FullName);
 
-        Texture2D tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        //Texture2D tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBAFloat, false);
 
         if (tex.LoadImage(imageData))
         {

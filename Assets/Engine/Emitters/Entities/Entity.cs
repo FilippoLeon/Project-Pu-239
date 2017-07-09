@@ -13,7 +13,7 @@ public partial class Entity : Emitter, IXmlSerializable {
     public World world;
     private Vector2 position;
 
-    public static string category = "entitties";
+    public static string category = "entities";
     public override string Category() { return category; }
 
     public SpriteInfo spriteInfo = new SpriteInfo();

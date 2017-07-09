@@ -16,6 +16,8 @@ public class Stage : Emitter, IXmlSerializable
     int cost;
     bool completed;
 
+    public bool Done() { return completed; }
+
     public string targetType;
     public string targetPosition;
     public string target;
@@ -74,6 +76,7 @@ public class Stage : Emitter, IXmlSerializable
                         ReadTarget(subReader);
                         break;
                     default:
+                        subReader.Read();
                         base.ReadElement(subReader);
                         break;
                 }
@@ -115,7 +118,7 @@ public class Stage : Emitter, IXmlSerializable
 
     }
 
-    void DoWork(World world)
+    public void DoWork(Entity entity, World world)
     {
 
         completion += 1;
@@ -127,6 +130,8 @@ public class Stage : Emitter, IXmlSerializable
 
     void Complete(World world)
     {
+        completion = 0;
+
         Emit("OnComplete", new object[] { world, job.parameters });
     }
        

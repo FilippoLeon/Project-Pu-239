@@ -18,9 +18,23 @@ public class World : Emitter {
     public int sizeX, sizeY;
 
     List<EntityAnimated> characters = new List<EntityAnimated>();
+
     Emitter selected;
     public Tile selectedTile;
 
+
+    public enum WorldMode { None, Build };
+    public WorldMode selectedMode = WorldMode.None;
+    public object[] modeArgs;
+
+    public void SetMode(WorldMode mode, object[] args)
+    {
+        this.selectedMode = mode;
+        this.modeArgs = args;
+    }
+
+    private WorldTime time = new WorldTime();
+    public WorldTime Time { get { return time; } set { time = value; } }
 
     public bool Paused
     {
@@ -31,6 +45,7 @@ public class World : Emitter {
         set
         {
             paused = value;
+            SppedChanged(speed);
         }
     }
 
@@ -40,8 +55,8 @@ public class World : Emitter {
 
     private int elapsedLong = 0;
     private int elapsedLongLong = 0;
-    static private int ticLength = 4;
-    static private int longTicLength = ticLength * 60;
+    static private int ticLength = 1;
+    static private int longTicLength = ticLength * 20;
     static private int longLongTicLength = longTicLength * 5;
 
 
@@ -248,12 +263,12 @@ public class World : Emitter {
             jobs[instance.jobCategory] = new SimplePriorityQueue<Job>();
         }
         jobs[instance.jobCategory].Enqueue(instance, 1);
-        instance.Schedule(parameters);
 
         foreach(IWorldListener listener in listeners)
         {
             listener.JobScheduled(this, instance);
         }
+        instance.Schedule(parameters);
     }
     
     public Tile GetTileAt(Coord coord)
@@ -276,7 +291,8 @@ public class World : Emitter {
 
     public void Tic()
     {
-        Debug.Log("Tic");
+        //Debug.Log("Tic");
+        Time.Tic();
         foreach(EntityAnimated entity in characters)
         {
             entity.Tic();
@@ -285,13 +301,13 @@ public class World : Emitter {
 
     public void TicLong()
     {
-        Debug.Log("LongTic");
+        //Debug.Log("LongTic");
 
     }
 
     public void TicLongLong()
     {
-        Debug.Log("LongLongTic");
+        //Debug.Log("LongLongTic");
 
     }
 

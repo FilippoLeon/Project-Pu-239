@@ -15,11 +15,10 @@
 		
 		<Action event="OnUpdate"  type="script">SelectionViewOnUpdate</Action>
 	</Panel>
-  <Panel id="time_manager" layout="horizontal" anchorMin="0,0.95" anchorMax="0.5,1">
-    <Button size="" type="simple">
+  <Panel id="time_manager" layout="horizontal" anchorMin="0,0.95" anchorMax="0.5,1" content="preferredFit">
+    <Button id="pause" size="" type="simple">
       <Sprite category="UI" id="pause"/>
       <Alt>Cyclespeed</Alt>
-      <Text>Play</Text>
       <Action event="OnClick">
         function (world)
             print("pause");
@@ -27,10 +26,9 @@
         end
       </Action>
     </Button>
-    <Button size="" type="simple">
+    <Button id="speed0" size="" type="simple">
       <Sprite category="UI" id="speed0"/>
       <Alt>Cyclespeed</Alt>
-      <Text>Play</Text>
       <Action event="OnClick">
         function (world)
           print("click0");
@@ -38,10 +36,9 @@
         end
       </Action>
     </Button>
-    <Button size="" type="simple">
+    <Button id="speed1" size="" type="simple">
       <Sprite category="UI" id="speed1"/>
       <Alt>Cyclespeed</Alt>
-      <Text>Play</Text>
       <Action event="OnClick">
         function (world)
           print("click1");
@@ -49,10 +46,9 @@
         end
       </Action>
     </Button>
-    <Button size="" type="simple">
+    <Button id="speed2" size="" type="simple">
       <Sprite category="UI" id="speed2"/>
       <Alt>Cyclespeed</Alt>
-      <Text>Play</Text>
       <Action event="OnClick">
         function (world)
           print("click2");
@@ -60,13 +56,45 @@
         end
       </Action>
     </Button>
+    <Label id="time_display" preferredSize="128,-1">
+      <Text>%World.%Time</Text>
+      <Action event="OnUpdate">
+        function (UI, world)
+          UI["time_display"].Text = world.Time.ToString()
+        end
+      </Action>
+    </Label>
     <Action event="OnCreate">
+      <![CDATA[
+      -- OnCreate events pass a GUIController instance and a World instance.
       function (UI, world)
-      function changeButtonTint(world, speed, paused)
-      print(string.format("Status %s %i %s", world.ToString(), speed, tostring(paused)));
+        -- Closure called then event "OnSpeedChange" is triggered.
+        -- Argument of OnSpeedChange are the World, the speed and if game is paused
+        local function changeButtonTint(world, speed, paused)
+          -- Debug print
+          -- print(UI["speed0"])
+          -- print(string.format("Status %s %i %s", world.ToString(), speed, tostring(paused)));
+          currentSelectedColor = Color.blue
+          notSelectedColor = Color.white
+         
+          UI["pause"].SetTint(paused and currentSelectedColor or notSelectedColor);
+          UI["speed0"].SetTint(notSelectedColor);
+          UI["speed1"].SetTint(notSelectedColor);
+          UI["speed2"].SetTint(notSelectedColor);
+          
+          if speed == 0 then
+            UI["speed0"].SetTint(currentSelectedColor)
+          elseif speed == 1 then
+            UI["speed1"].SetTint(currentSelectedColor)
+          elseif speed == 2 then
+            UI["speed2"].SetTint(currentSelectedColor)
+          end
+        end
+        -- Attach closure to function
+        world.AddAction("OnSpeedChange", changeButtonTint);
+        changeButtonTint(world, world.Speed, world.Paused)
       end
-      world.AddAction("OnSpeedChange", changeButtonTint);
-      end
+      ]]>
     </Action>
   </Panel>
 </Canvas>

@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Engine\Emitters\Entities\Action.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Emitter.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\Entity.cs" />
     <Compile Include="Assets\Engine\Emitters\Entities\EntityAnimated.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Assets\Engine\Emitters\Room.cs" />
     <Compile Include="Assets\Engine\Emitters\Tile.cs" />
     <Compile Include="Assets\Engine\Emitters\World.cs" />
+    <Compile Include="Assets\Engine\Emitters\WorldTime.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEmitterListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEntityBuildingListener.cs" />
     <Compile Include="Assets\Engine\Interfaces\IEntityListener.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Assets\Unity\Controllers\WorldController.cs" />
     <Compile Include="Assets\Unity\GUI\GUIController.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Label.cs" />
+    <Compile Include="Assets\Utilities\LUA\Global.cs" />
     <Compile Include="Assets\Utilities\PathUtilities.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidget.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidgetContainer.cs" />
@@ -149,7 +152,9 @@
     <None Include="Assets\StreamingAssets\Data\Buildings.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Assets\StreamingAssets\Data\UI\UI.xml" />
+    <None Include="Assets\StreamingAssets\Data\UI\UI.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Assets\StreamingAssets\Sprites\Buildings.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Characters.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Furniture.xml" />

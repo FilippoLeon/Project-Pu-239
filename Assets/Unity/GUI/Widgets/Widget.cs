@@ -3,15 +3,18 @@ using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Xml;
 
 namespace UI
 {
     [MoonSharpUserData]
-    public class Widget<T> : Emitter, IWidget where T : IWidget, new()
+    public class Widget : Emitter, IWidget
     {
         IWidget parent = null;
 
-        
+        LayoutElement layoutComponent;
+
         public string Id {
             set {
                 id = value;
@@ -25,19 +28,21 @@ namespace UI
 
         public Widget() {
             GameObject = new GameObject();
-            Id = Convert.ToString(staticId++);
+            Id = "W" + Convert.ToString(staticId++);
 
             GameObject.transform.SetParent(GUIController.Canvas.transform);
+            
+            layoutComponent = GameObject.AddComponent<LayoutElement>();
+            
+        }
+
+        public virtual void SetNonExpanding(int minWidth = -1)
+        {
+            if(minWidth >= 0) layoutComponent.minWidth = minWidth;
+            layoutComponent.preferredWidth = 0;
         }
 
         public GameObject GameObject { set; get; }
-
-        public static T Create(string id)
-        {
-            T t = new T();
-            t.Id = id;
-            return t;
-        }
         
         public void SetParent(IWidget parent)
         {
@@ -56,6 +61,27 @@ namespace UI
         public override string Category()
         {
             return "UI";
+        }
+
+        internal void ReadElement(XmlReader reader, IWidget parent)
+        {
+            if (reader.GetAttribute("id") != null)
+            {
+                Id = reader.GetAttribute("id");
+            }
+            string preferredSize = reader.GetAttribute("preferredSize");
+            if (preferredSize != null)
+            {
+                Vector2 pfs = XmlUtilities.ToVector2(preferredSize);
+                if(pfs.x >= 0)
+                {
+                    layoutComponent.preferredWidth = pfs.x;
+                }
+                if (pfs.y >= 0)
+                {
+                    layoutComponent.preferredHeight = pfs.y;
+                }
+            }
         }
     }
 }

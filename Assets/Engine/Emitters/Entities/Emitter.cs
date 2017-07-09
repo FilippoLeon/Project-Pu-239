@@ -1,12 +1,12 @@
-﻿using MoonSharp.Interpreter;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using UnityEngine;
 
-abstract public class Emitter : IXmlSerializable, IEmitter
+public abstract partial class Emitter : IXmlSerializable, IEmitter, INotifyPropertyChanged
 {
     public string id;
 
@@ -25,90 +25,6 @@ abstract public class Emitter : IXmlSerializable, IEmitter
         if(listeners.Count >= 1)
         {
             Debug.LogWarning("Copying Emitter with non-empty listeners, listeners will not be copied.");
-        }
-    }
-
-    public class Action
-    {
-        ActionType type;
-        string content;
-        Script script;
-        Closure closure;
-
-        public enum ActionType { FunctionName, Inline, None, Closure };
-       
-
-        public Action(string type, string content)
-        {
-            this.content = content;
-            if(content == "")
-            {
-                Debug.LogWarning("Empty or Invalid Action field.");
-                this.type = ActionType.None;
-                return;
-            }
-            switch(type)
-            {
-                case "script":
-                    this.type = ActionType.FunctionName;
-                    break;
-                default:
-                    this.type = ActionType.Inline;
-                    script = new Script();
-                    script.Options.DebugPrint += (string str) =>
-                    {
-                        Debug.Log("LUA inline: " + str);
-                    };
-                    script.DoString("action =" + content);
-                    return;
-            }
-        }
-
-        public Action(Closure closure)
-        {
-            this.closure = closure;
-            this.type = ActionType.Closure;
-        }
-
-        public DynValue Call(Emitter emitter, object[] args)
-        {
-            switch (type)
-            {
-                case ActionType.FunctionName:
-                    return LUA.ScriptLoader.Call(emitter.Category(), content, args);
-                case ActionType.Inline:
-                    try
-                    {
-                        return script.Call(script.Globals["action"], args);
-                    }
-                            catch (ScriptRuntimeException e)
-                    {
-                        Debug.LogError("Script exception: " + e.DecoratedMessage);
-                        return null;
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Debug.LogError("Script exception while running call to action: " + e.Message);
-                        return null;
-                    }
-                case ActionType.Closure:
-                    try
-                    {
-                        return closure.Call(args);
-                    }
-                    catch (ScriptRuntimeException e)
-                    {
-                        Debug.LogError("Script exception: " + e.DecoratedMessage);
-                        return null;
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Debug.LogError("Script exception while running call to action: " + e.Message);
-                        return null;
-                    }
-                default:
-                    return null;
-            }
         }
     }
 
@@ -142,7 +58,10 @@ abstract public class Emitter : IXmlSerializable, IEmitter
 
     public enum ActionType
     {
-        OnClick, OnUpdate, OnCreate
+        OnClick, // world
+        OnUpdate, // UI, world
+        OnCreate, // UI, world
+        OnComplete // World world, object[] parameters
     }
 
     public void AddAction(string name, string type, string content)
@@ -153,7 +72,7 @@ abstract public class Emitter : IXmlSerializable, IEmitter
             Debug.LogWarning(String.Format("Try to add empty Action with no-name to list, content ={0}.", content));
             return;
         }
-        Action action = new Action(type, content);
+        Action action = new Action(this, name, type, content);
         actions.Add(name, action);
         AddAction((ActionType) Enum.Parse(typeof(ActionType), name), action);
     }
@@ -188,5 +107,28 @@ abstract public class Emitter : IXmlSerializable, IEmitter
             listener.Event(signal, args);
         }
     }
-    
+
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        PropertyChangedEventHandler handler = PropertyChanged;
+        if (handler != null)
+        {
+            handler(this, e);
+        }
+    }
+
+    protected void SetPropertyField<T>(string propertyName, ref T field, T newValue)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, newValue))
+        {
+            field = newValue;
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    #region INotifyPropertyChanged Members
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    #endregion
 }

@@ -14,13 +14,17 @@ namespace LUA
 
         static private string directory = "Scripts";
 
+        static private List<Global> globals = new List<Global>();
+
         public ScriptLoader()
         {
             UserData.RegisterAssembly();
 
+            UserData.RegisterType<Color>();
+
             LoadScript("test", "test.lua");
 
-            Debug.Log("Test call to LUA.");
+            //Debug.Log("Test call to LUA.");
             DynValue ret = Call("test", "test");
             Debug.Assert(ret.CastToBool() == true);
         }
@@ -33,12 +37,18 @@ namespace LUA
 
         public static void LoadScript(string category, string filename)
         {
-            script[category] = new Script();
+            if (!script.ContainsKey(category)) {
+                script[category] = new Script();
 
-            script[category].Options.DebugPrint += (string str) =>
-            {
-                Debug.Log("LUA: " + str);
-            };
+                script[category].Options.DebugPrint += (string str) =>
+                {
+                    Debug.Log("LUA: " + str);
+                };
+                foreach(Global global in globals)
+                {
+                    script[category].Globals[global.typeName] = global.type;
+                }
+            }
 
             FileInfo info = new FileInfo(
                 Path.Combine(Application.streamingAssetsPath,
@@ -53,9 +63,15 @@ namespace LUA
             StreamReader reader = new StreamReader(file.OpenRead());
             string textScript = reader.ReadToEnd();
 
+            DoString(category, textScript);
+        }
+
+        public static void DoString(string category, string content)
+        {
+
             try
             {
-                script[category].DoString(textScript);
+                script[category].DoString(content);
             }
             catch (SyntaxErrorException e)
             {
@@ -82,11 +98,23 @@ namespace LUA
             }
         }
 
-        public static void RegisterPlaceolder(string category, Type type) {
+        public static void RegisterPlaceolder(string category, Type type)
+        {
             string typeName = type.ToString().Split('.').Last().Split('+').Last();
-            Debug.Log(String.Format("Registering placeholder for type {0} in category {1} as {2}", 
+            Debug.Log(String.Format("Registering placeholder for type {0} in category {1} as {2}",
                 type, category, typeName));
-            script[category].Globals[typeName] = type;
+
+            if (category == null)
+            {
+                foreach (Script s in script.Values)
+                {
+                    s.Globals[typeName] = type;
+                    globals.Add(new Global(typeName, type));
+                }
+            }
+            else { 
+                script[category].Globals[typeName] = type;
+            }
         }
     }
 }

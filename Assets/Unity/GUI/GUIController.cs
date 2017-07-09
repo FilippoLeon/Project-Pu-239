@@ -24,6 +24,12 @@ public class GUIController : MonoBehaviour
         LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(Panel));
         LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(UI.Button));
 
+
+        LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(Color));
+
+        LUA.ScriptLoader.RegisterPlaceolder("UI", typeof(World.WorldMode));
+
+    
         BuildUI();
 
         //LUA.ScriptLoader.Call("UI", "buildBuildingPlacementPanel", new object[] { worldController.World });
@@ -45,14 +51,14 @@ public class GUIController : MonoBehaviour
             {
                 case XmlNodeType.Element:
                     XmlReader subTree = reader.ReadSubtree();
-                    ReadElement<Widget<Panel>>(subTree);
+                    ReadElement(subTree);
                     subTree.Close();
                     break;
             }
         }
     }
 
-    public static void ReadElement<T>(XmlReader reader, Widget<T> parent = null) where T: IWidget, new()
+    public static void ReadElement(XmlReader reader, Widget parent = null) 
     {
         reader.Read();
         IWidget child = null;
@@ -75,7 +81,10 @@ public class GUIController : MonoBehaviour
         if(child != null)
         {
             childs.Add(child.Id, child);
-            if(child is IEmitter)
+
+            //WorldController.StaticWorld.PropertyChanged += 
+
+            if (child is IEmitter)
             {
                 (child as IEmitter).Emit("OnCreate", new object[] { childs, WorldController.StaticWorld });
             }
