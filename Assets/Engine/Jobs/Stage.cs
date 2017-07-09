@@ -25,6 +25,11 @@ public class Stage : Emitter, IXmlSerializable
     List<Entity> resources = new List<Entity>();
     Job job;
 
+    public float CurrentProgress()
+    {
+        return completion / (float) cost;
+    }
+
     public Stage(Stage other, Job job) : base(other)
     {
         completion = other.completion;

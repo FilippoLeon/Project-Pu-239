@@ -14,6 +14,11 @@ public class JobComponent : EmitterController, IJobListener {
         JobComponent entityComponent = entityObject.AddComponent<JobComponent>();
         entityObject.transform.SetParent(worldComponent.transform);
 
+        IndicatorBar bar = IndicatorBar.Instantiate(entityObject);
+        bar.GetSizeCallback = new IndicatorBar.GetSize(
+            () => { return job.CurrentStage().CurrentProgress(); }
+            );
+
         entityObject.name = job.id + "_indicator";
         entityComponent.job = job;
 
@@ -34,5 +39,10 @@ public class JobComponent : EmitterController, IJobListener {
     public void Schedule(World world)
     {
         transform.position = ((World.Coord) job.GetTarget().value).ToVector2();
+    }
+
+    public void Progress(World world)
+    {
+
     }
 }

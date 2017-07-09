@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.4f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -113,27 +111,28 @@
     <Compile Include="Assets\Engine\Tools\Pathfinding\IWieghtedNode.cs" />
     <Compile Include="Assets\Engine\Tools\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Unity\Components\EmitterController.cs" />
-    <Compile Include="Assets\Unity\Components\JobComponent.cs" />
     <Compile Include="Assets\Unity\Components\EntityComponent.cs" />
+    <Compile Include="Assets\Unity\Components\JobComponent.cs" />
     <Compile Include="Assets\Unity\Components\MeshComponent.cs" />
     <Compile Include="Assets\Unity\Components\OverlayComponent.cs" />
     <Compile Include="Assets\Unity\Components\StreamingAssets.cs" />
+    <Compile Include="Assets\Unity\Components\Subcomponents\IndicatorBar.cs" />
     <Compile Include="Assets\Unity\Components\WorldComponent.cs" />
     <Compile Include="Assets\Unity\Controllers\CameraController.cs" />
     <Compile Include="Assets\Unity\Controllers\CreativeController.cs" />
     <Compile Include="Assets\Unity\Controllers\MouseAndKeyboardController.cs" />
     <Compile Include="Assets\Unity\Controllers\WorldController.cs" />
     <Compile Include="Assets\Unity\GUI\GUIController.cs" />
-    <Compile Include="Assets\Unity\GUI\Widgets\Label.cs" />
-    <Compile Include="Assets\Utilities\LUA\Global.cs" />
-    <Compile Include="Assets\Utilities\PathUtilities.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Button.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidget.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Interfaces\IWidgetContainer.cs" />
-    <Compile Include="Assets\Unity\GUI\Widgets\Button.cs" />
+    <Compile Include="Assets\Unity\GUI\Widgets\Label.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Panel.cs" />
     <Compile Include="Assets\Unity\GUI\Widgets\Widget.cs" />
     <Compile Include="Assets\Utilities\EnumerableUtilities.cs" />
+    <Compile Include="Assets\Utilities\LUA\Global.cs" />
     <Compile Include="Assets\Utilities\LUA\ScriptLoader.cs" />
+    <Compile Include="Assets\Utilities\PathUtilities.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueue.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\FastPriorityQueueNode.cs" />
     <Compile Include="Assets\Utilities\Priority Queue\GenericPriorityQueue.cs" />
@@ -149,22 +148,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StreamingAssets\Colormaps\LICENSE.txt" />
-    <None Include="Assets\StreamingAssets\Data\Buildings.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Assets\StreamingAssets\Data\UI\UI.xml">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Assets\StreamingAssets\Data\Buildings.xml" />
+    <None Include="Assets\StreamingAssets\Data\Jobs.xml" />
+    <None Include="Assets\StreamingAssets\Data\UI\UI.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Buildings.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Characters.xml" />
     <None Include="Assets\StreamingAssets\Sprites\Furniture.xml" />
     <None Include="Assets\StreamingAssets\Sprites\UI.xml" />
     <None Include="Assets\Utilities\Priority Queue\LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\StreamingAssets\Data\Jobs.xml">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

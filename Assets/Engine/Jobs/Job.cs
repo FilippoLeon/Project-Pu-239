@@ -187,7 +187,7 @@ public partial class Job : Emitter, IXmlSerializable
         currentStage += 1;
     }
 
-    Stage CurrentStage()
+    public Stage CurrentStage()
     {
         return stages[currentStage];
     }
